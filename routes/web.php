@@ -16,7 +16,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // #CONTA DO USUÁRIO FINAL (CONSUMIDOR)
 Route::middleware(['auth'])->group(function() {
     Route::get('/account-dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-
 });
 
 // #CONTA DO ADMINISTRADOR

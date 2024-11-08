@@ -4,16 +4,16 @@
 	<head>
 		<title>Raffle</title>
 		<meta charset="utf-8" />
-		<meta name="description" content="The most advanced Tailwind CSS & Bootstrap 5 Admin Theme with 40 unique prebuilt layouts on Themeforest trusted by 100,000 beginners and professionals. Multi-demo, Dark Mode, RTL support and complete React, Angular, Vue, Asp.Net Core, Rails, Spring, Blazor, Django, Express.js, Node.js, Flask, Symfony & Laravel versions. Grab your copy now and get life-time updates for free." />
-		<meta name="keywords" content="tailwind, tailwindcss, metronic, bootstrap, bootstrap 5, angular, VueJs, React, Asp.Net Core, Rails, Spring, Blazor, Django, Express.js, Node.js, Flask, Symfony & Laravel starter kits, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
+		<meta name="description" content="Participe de rifas eletrônicas e ajude a transformar vidas! No nosso site, você pode adquirir e compartilhar rifas com seus amigos para apoiar causas importantes e pessoas que precisam, tudo de forma rápida e segura, mesmo à distância. Junte-se a uma comunidade solidária e concorra a prêmios enquanto faz o bem." />
+		<meta name="keywords" content="Rifa eletrônica, Solidariedade online, Ajudar pessoas, Rifa digital, Doação online, Compartilhar rifas, Caridade à distância, Causas solidárias, Rifa beneficente, Prêmios solidários, Apoio a causas, Sorteios online, Solidariedade virtual, Contribuição social, Rifa compartilhada, Comunidade solidária, Apoiar de longe, Engajamento social, Doação segura, Prêmios beneficentes" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta property="og:locale" content="en_US" />
-		<meta property="og:type" content="article" />
-		<meta property="og:title" content="Raffle" />
-		<meta property="og:url" content="https://keenthemes.com/metronic" />
-		<meta property="og:site_name" content="Metronic by Keenthemes" />
-		<link rel="canonical" href="http://preview.keenthemes.comlanding.html" />
-		<link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
+		<meta property="og:locale" content="pt-BR" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Raffle - Transformando solidariedade em prêmios" />
+		<meta property="og:url" content="http://127.0.0.1:8000" />
+		<meta property="og:site_name" content="Raffles online" />
+		<link rel="canonical" href="http://127.0.0.1:8000/account-dashboard" />
+		<link rel="shortcut icon" href="assets/media/logos/fav.ico" />
 		<!--begin::Fonts(mandatory for all pages)-->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
 		<!--end::Fonts-->
@@ -70,48 +70,33 @@
 									<div class="d-lg-block p-5 p-lg-0" data-kt-drawer="true" data-kt-drawer-name="landing-menu" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="200px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_landing_menu_toggle" data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_body', lg: '#kt_header_nav_wrapper'}">
 										<!--begin::Menu-->
 										<div class="menu menu-column flex-nowrap menu-rounded menu-lg-row menu-title-gray-600 menu-state-title-primary nav nav-flush fs-5 fw-semibold" id="kt_landing_menu">
-											<!--begin::Menu item-->
+
 											<div class="menu-item">
-												<!--begin::Menu link-->
 												<a class="menu-link nav-link active py-3 px-4 px-xxl-6" href="{{ route('home') }}" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Início</a>
-												<!--end::Menu link-->
 											</div>
-											<!--end::Menu item-->
-											<!--begin::Menu item-->
+											
 											<div class="menu-item">
-												<!--begin::Menu link-->
 												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="#how-it-works" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Todas as rifas</a>
-												<!--end::Menu link-->
 											</div>
-											<!--end::Menu item-->
-											<!--begin::Menu item-->
-											{{-- <div class="menu-item">
-												<!--begin::Menu link-->
-												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="#achievements" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Quem somos</a>
-												<!--end::Menu link-->
+
+											@guest
+											@else
+											<div class="menu-item">
+												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('user.dashboard') }}" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Painel</a>
 											</div> 
-											<!--end::Menu item-->
-											<!--begin::Menu item-->
-											<div class="menu-item">
-												<!--begin::Menu link-->
+											@endguest
+
+											{{-- <div class="menu-item">
 												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="#team" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Team</a>
-												<!--end::Menu link-->
 											</div>
-											<!--end::Menu item-->
-											<!--begin::Menu item-->
+											
 											<div class="menu-item">
-												<!--begin::Menu link-->
 												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="#portfolio" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Portfolio</a>
-												<!--end::Menu link-->
 											</div>
-											<!--end::Menu item-->
-											<!--begin::Menu item-->
+											
 											<div class="menu-item">
-												<!--begin::Menu link-->
 												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="#pricing" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Pricing</a>
-												<!--end::Menu link-->
 											</div>
-											<!--end::Menu item-->
                                             --}}
 										</div>
 										<!--end::Menu-->
@@ -150,7 +135,7 @@
 			<!--end::Header Section-->
 
             @yield('content')
-			@include('partials.footer')
+			@include('partials.footerApp')
 			
 		</div>
 		
