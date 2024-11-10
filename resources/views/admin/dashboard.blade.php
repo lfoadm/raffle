@@ -55,6 +55,7 @@
                     <!--begin::Col-->
                     <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-10">
                         <!--begin::Card widget 4-->
+                        <pre>{{Auth::user()->role}}</pre>
                         <div class="card card-flush h-md-50 mb-5 mb-xl-10">
                             <!--begin::Header-->
                             <div class="card-header pt-5">

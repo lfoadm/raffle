@@ -28,5 +28,12 @@ class DatabaseSeeder extends Seeder
             'mobile' => '17997249344',
             'role' => 'user',
         ]);
+
+        User::factory()->create([
+            'name' => 'Carolina Mendonça',
+            'email' => 'carol@icloud.com',
+            'mobile' => '34999924794',
+            'role' => 'user',
+        ]);
     }
 }

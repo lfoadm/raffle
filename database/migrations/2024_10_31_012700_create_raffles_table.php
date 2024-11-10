@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->boolean('status')->default(true);
+            $table->string('image')->nullable();
+            $table->enum('status', ['active', 'closed', 'inactive'])->default('active');
             $table->decimal('total_value', 10, 2);
             $table->integer('quota_count');
             $table->decimal('quota_price', 10, 2)->storedAs('total_value / quota_count');

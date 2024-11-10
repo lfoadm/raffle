@@ -13,13 +13,13 @@
 		<meta property="og:url" content="http://127.0.0.1:8000" />
 		<meta property="og:site_name" content="Raffles online" />
 		<link rel="canonical" href="http://127.0.0.1:8000/account-dashboard" />
-		<link rel="shortcut icon" href="assets/media/logos/fav.ico" />
+		<link rel="shortcut icon" href="{{ asset('assets/media/logos/fav.ico') }}" />
 		<!--begin::Fonts(mandatory for all pages)-->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
 		<!--end::Fonts-->
 		<!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
-		<link href="assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-		<link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+		<link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
+		<link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
 		<!--end::Global Stylesheets Bundle-->
 		<script>// Frame-busting to prevent site from being loaded within a frame without permission (click-jacking) if (window.top != window.self) { window.top.location.replace(window.self.location.href); }</script>
 	</head>
@@ -82,7 +82,7 @@
 											@guest
 											@else
 											<div class="menu-item">
-												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('user.dashboard') }}" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Painel</a>
+												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="{{ route('dashboard') }}" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Painel</a>
 											</div> 
 											@endguest
 
@@ -111,7 +111,7 @@
 								</div>
                                 @else
                                 <div class="flex-equal text-end ms-1">
-									<a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('user.dashboard') }}" class="btn btn-warning">{{ Auth::user()->name }}</a>
+									<a href="{{ route('dashboard') }}" class="btn btn-warning">{{ Auth::user()->name }}</a>
 								</div>
                                 @endguest
 								<!--end::Toolbar-->

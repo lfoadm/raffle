@@ -1,11 +1,11 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\All;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Raffle>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\All\Raffle>
  */
 class RaffleFactory extends Factory
 {
