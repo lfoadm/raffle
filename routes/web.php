@@ -25,6 +25,8 @@ Route::middleware(['auth'])->group(function() {
 
     #rifas
     Route::get('/raffles', [RaffleController::class, 'index'])->name('raffle.index');
+    Route::get('/raffles/create', [RaffleController::class, 'create'])->name('raffle.create');
+    Route::post('/raffles/store', [RaffleController::class, 'store'])->name('raffle.store');
 });
 
 // #CONTA DO ADMINISTRADOR

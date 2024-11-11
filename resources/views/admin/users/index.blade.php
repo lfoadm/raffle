@@ -73,10 +73,11 @@
                                     </th>
                                     <th class="min-w-100px">Cód usuário</th>
                                     <th class="min-w-175px">Nome</th>
-                                    <th class="text-end min-w-70px">E-mail</th>
-                                    <th class="text-end min-w-100px">Celular</th>
-                                    <th class="text-end min-w-100px">Data Cadastro</th>
-                                    <th class="text-end min-w-100px">Ações</th>
+                                    <th class="text-center min-w-70px">E-mail</th>
+                                    <th class="text-center min-w-70px">Tipo</th>
+                                    <th class="text-center min-w-100px">Celular</th>
+                                    <th class="text-center min-w-100px">Data Cadastro</th>
+                                    <th class="text-center min-w-100px">Ações</th>
                                 </tr>
                             </thead>
                             <tbody class="fw-semibold text-gray-600">
@@ -87,7 +88,7 @@
                                             <input class="form-check-input" type="checkbox" value="1" />
                                         </div>
                                     </td>
-                                    <td class="text-start" data-kt-ecommerce-order-filter="order_id">
+                                    <td class="text-start" data-kt-ecommerce-order-filter="user_id">
                                         <a href="#" class="text-gray-800 text-hover-primary fw-bold">{{ $user->id }}</a>
                                     </td>
                                     <td>
@@ -111,10 +112,17 @@
                                     <td class="text-end pe-0">
                                         <span class="fw-bold">{{ $user->email }}</span>
                                     </td>
+                                    <td class="text-center pe-0">
+                                        @if($user->role === 'admin')
+                                            <div class="badge badge-light-success">Administrador</div>
+                                        @else
+                                            <div class="badge badge-light-info">Usuário</div>
+                                        @endif
+                                    </td>
                                     <td class="text-end" data-order="2024-10-20">
                                         <span class="fw-bold">{{ $user->mobile }}</span>
                                     </td>
-                                    <td class="text-end" data-order="2024-10-21">
+                                    <td class="text-center" data-order="2024-10-21">
                                         <span class="fw-bold">{{ $user->created_at->format('d/m/Y') }}</span>
                                     </td>
                                     <td class="text-end">

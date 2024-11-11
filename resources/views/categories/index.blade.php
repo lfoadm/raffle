@@ -75,6 +75,7 @@
                                     <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
                                         <th class="text-center min-w-100px">Código</th>
                                         <th class="text-center min-w-100px">Nome</th>
+                                        <th class="text-start min-w-100px">Descrição</th>
                                         <th class="text-center min-w-70px">Ações</th>
                                     </tr>
                                 </thead>
@@ -86,6 +87,9 @@
                                         </td>
                                         <td class="text-center pe-0">
                                             <span class="fw-bold">{{ $category->name }}</span>
+                                        </td>
+                                        <td class="text-start pe-0">
+                                            <span class="fw-bold">{{ $category->description }}</span>
                                         </td>
                                         <td class="text-center">
                                             <a href="#" class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Ação 

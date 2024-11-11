@@ -26,19 +26,12 @@
                             </li>
                             <!--end::Item-->
                             <!--begin::Item-->
-                            <li class="breadcrumb-item text-muted">mihas rifas</li>
+                            <li class="breadcrumb-item text-muted">minhas rifas</li>
                             <!--end::Item-->
                         </ul>
                         <!--end::Breadcrumb-->
                     </div>
                     <!--end::Page title-->
-                    <!--begin::Actions-->
-                    <div class="d-flex align-items-center gap-2 gap-lg-3">
-                        <!--begin::Primary button-->
-                        <a href="#" class="btn btn-xl fw-bold btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_create_app">Criar</a>
-                        <!--end::Primary button-->
-                    </div>
-                    <!--end::Actions-->
                 </div>
                 <!--end::Toolbar container-->
             </div>
@@ -51,6 +44,8 @@
                     <div class="card card-flush">
                         <!--begin::Card header-->
                         <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+                           <!--begin::Card header-->
+                        
                             <!--begin::Card title-->
                             <div class="card-title">
                                 <!--begin::Search-->
@@ -59,7 +54,7 @@
                                         <span class="path1"></span>
                                         <span class="path2"></span>
                                     </i>
-                                    <input type="text" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="Buscar rifa" />
+                                    <input type="text" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="Buscar..." />
                                 </div>
                                 <!--end::Search-->
                             </div>
@@ -71,15 +66,22 @@
                                     <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Status" data-kt-ecommerce-product-filter="status">
                                         <option></option>
                                         <option value="all">Todos</option>
-                                        <option value="published">Em andamento</option>
-                                        <option value="scheduled">Sorteada</option>
-                                        <option value="inactive">Inativa</option>
+                                        <option value="active">Em andamento</option>
+                                        <option value="closed">Finalizado</option>
+                                        <option value="inactive">Inativo</option>
                                     </select>
                                     <!--end::Select2-->
                                 </div>
+                                <!--begin::Add product-->
+                                <a href="{{ route('raffle.create') }}" class="btn btn-primary">Adicionar</a>
+                                <!--end::Add product-->
                             </div>
                             <!--end::Card toolbar-->
+                        
+                        <!--end::Card header-->
+                          
                         </div>
+                        
                         <!--end::Card header-->
                         <!--begin::Card body-->
                         <div class="card-body pt-0">

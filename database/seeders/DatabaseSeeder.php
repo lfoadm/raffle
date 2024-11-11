@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\All\Category;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -35,5 +36,7 @@ class DatabaseSeeder extends Seeder
             'mobile' => '34999924794',
             'role' => 'user',
         ]);
+        
+        $this->call(CategorySeeder::class);
     }
 }
