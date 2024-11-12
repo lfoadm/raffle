@@ -20,9 +20,9 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->enum('status', ['active', 'closed', 'inactive'])->default('active');
-            $table->decimal('total_value', 10, 2);
-            $table->integer('quota_count');
-            $table->decimal('quota_price', 10, 2)->storedAs('total_value / quota_count');
+            $table->decimal('total_value', 10, 2); // total da rifa
+            $table->integer('quota_count'); // quantidade de cotas
+            $table->decimal('quota_price', 10, 2)->storedAs('total_value / quota_count'); // valor da cota
             $table->timestamps();
         });
     }

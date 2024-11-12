@@ -19,7 +19,7 @@ class UserController extends Controller
     
     public function profile()
     {
-        return view('user.profile');
+        return view('profile.settings');
     }
 
     public function user_update(Request $request)

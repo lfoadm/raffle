@@ -40,7 +40,7 @@
             <div id="kt_app_content" class="app-content flex-column-fluid">
                 <!--begin::Content container-->
                 <div id="kt_app_content_container" class="app-container container-xxl">
-                    @include('partials.alerts.success')
+                    @include('components.alert')
                     <!--begin::Products-->
                     <div class="card card-flush">
                         <!--begin::Card header-->
@@ -70,7 +70,7 @@
                         <!--begin::Card body-->
                         <div class="card-body pt-0">
                             <!--begin::Table-->
-                            <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_ecommerce_products_table">
+                            <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_ecommerce_categories_table">
                                 <thead>
                                     <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
                                         <th class="text-center min-w-100px">Código</th>
@@ -128,9 +128,12 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            <!--end::Table-->
-                        </div>
                         <!--end::Card body-->
+                        <!-- Pagination -->
+                        <div class="flex items-center justify-between flex-wrap gap10 wgp-pagination">
+                            {{ $categories->links('pagination::bootstrap-5') }}
+                        </div>
+                        <!--end::Pagination-->
                     </div>
                     <!--end::Products-->
                 </div>
@@ -139,7 +142,7 @@
             <!--end::Content-->
         </div>
         <!--end::Content wrapper-->
-        @include('partials.footerAdmin')
+        @include('includes.footerAdmin')
     </div>
     <!--end:::Main-->
 @endsection

@@ -153,6 +153,11 @@
                             </tbody>
                         </table>
                         <!--end::Table-->
+                        <!-- Pagination -->
+                        <div class="flex items-center justify-between flex-wrap gap10 wgp-pagination">
+                            {{ $users->links('pagination::bootstrap-5') }}
+                        </div>
+                        <!--end::Pagination-->
                     </div>
                     <!--end::Card body-->
                 </div>
@@ -163,7 +168,7 @@
         <!--end::Content-->
     </div>
     <!--end::Content wrapper-->
-    @include('partials.footerAdmin')
+    @include('includes.footerAdmin')
 </div>
 <!--end:::Main-->
 

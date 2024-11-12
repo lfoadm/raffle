@@ -11,7 +11,7 @@
                 <!--begin::Page title-->
                 <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <!--begin::Title-->
-                    <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">Criar categoria</h1>
+                    <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">Editar categoria</h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
@@ -41,8 +41,10 @@
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-xxl">
                 <!--begin::Form-->
-                <form method="POST" id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" data-kt-redirect="#" action="{{ route('admin.categories.store') }}">
+                <form method="POST" id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" data-kt-redirect="#" action="{{ route('admin.categories.update', ['category' => $category->id]) }}">
                     @csrf
+                    @method('PUT')
+                    <input type="hidden" name="id" value="{{ $category->id }}" />
                     <!--begin::Main column-->
                     <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
                         <!--begin:::Tabs-->
@@ -62,7 +64,7 @@
                                         <!--begin::Card header-->
                                         <div class="card-header">
                                             <div class="card-title">
-                                                <h2>Novo</h2>
+                                                <h2>Edição</h2>
                                             </div>
                                         </div>
                                         <!--end::Card header-->
@@ -71,13 +73,13 @@
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
                                                 <label class="required form-label">Nome da Categoria</label>
-                                                <input type="text" name="name" class="form-control mb-2" placeholder="Nome" value="{{ old('name') }}" />
+                                                <input type="text" name="name" class="form-control mb-2" placeholder="Nome" value="{{ $category->name }}" />
                                                 @error('name')<span class="alert alert-danger text-center">{{ $message }}</span>@enderror
                                                 <div class="text-muted fs-7">É necessário e recomendado que o nome da categoria seja único.</div>
                                             </div>
                                             <div class="mb-10 fv-row">
                                                 <label class="required form-label">Slug</label>
-                                                <input type="text" name="slug" class="form-control mb-2" placeholder="Slug" value="{{ old('slug') }}" />
+                                                <input type="text" name="slug" class="form-control mb-2" placeholder="Slug" value="{{ $category->slug }}" />
                                                 
                                                 <div class="text-muted fs-7">Campo gerado automaticamente.</div>
                                                 @error('slug')
@@ -101,7 +103,7 @@
                             <!--end::Button-->
                             <!--begin::Button-->
                             <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-primary">
-                                <span class="indicator-label">Salvar</span>
+                                <span class="indicator-label">Atualizar</span>
                                 <span class="indicator-progress">Aguarde... 
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                             </button>
@@ -117,23 +119,26 @@
         <!--end::Content-->
     </div>
     <!--end::Content wrapper-->
-    @include('partials.footerAdmin')
+    @include('includes.footerAdmin')
 </div>
 <!--end:::Main-->
 @endsection
 @push('scripts')
-    <script>
-        $(function(){
-            $("input[name='name']").on("change", function(){
-                $("input[name='slug']").val(StringToSlug($(this).val()));
-            });
+<script>
+    $(function() {
+        $("input[name='name']").on("input", function() {
+            $("input[name='slug']").val(StringToSlug($(this).val()));
         });
+    });
 
-        function StringToSlug(Text)
-        {
-            return Text.toLowerCase()
-            .replace(/[^\w ]+/g, "")
-            .replace(/ +/g,"-");
-        }
-    </script>
+    function StringToSlug(Text) {
+        return Text
+            .toLowerCase()
+            .normalize("NFD") // Divide caracteres acentuados em base + acento
+            .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
+            .replace(/[^\w ]+/g, "") // Remove caracteres especiais restantes
+            .replace(/ +/g, "-"); // Substitui espaços por hífens
+    }
+</script>
 @endpush
+

@@ -15,7 +15,6 @@ Auth::routes();
 #SITE ABERTO / SEM MIDDLEWARE
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-
 // #CONTA DO USUÁRIO FINAL (CONSUMIDOR)
 Route::middleware(['auth'])->group(function() {
     #conta de usuário

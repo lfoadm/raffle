@@ -4525,7 +4525,7 @@
 									<!--end::Menu-->
 								</div>
 								<!--end::Theme mode-->
-								@include('partials.menu')
+								@include('includes.navbar')
 								<!--begin::Header menu toggle-->
 								<div class="app-navbar-item d-lg-none ms-2 me-n2" title="Show header menu">
 									<div class="btn btn-flex btn-icon btn-active-color-primary w-30px h-30px" id="kt_app_header_menu_toggle">
@@ -4548,7 +4548,7 @@
 				<!--end::Header-->
 				<!--begin::Wrapper-->
 				<div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
-					@include('partials.sidebar')
+					@include('includes.sidebar')
 					<!--begin::Main-->
 					@yield('content')
 					<!--end:::Main-->

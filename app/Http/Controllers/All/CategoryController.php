@@ -11,13 +11,13 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
-        return view('categories.index', compact('categories'));
+        $categories = Category::orderBy('created_at', 'DESC')->paginate(9);
+        return view('pages.categories.index', compact('categories'));
     }
 
     public function create()
     {
-        return view('categories.create');
+        return view('pages.categories.create');
     }
 
     public function store(Request $request)
@@ -30,7 +30,7 @@ class CategoryController extends Controller
         $category->name = $request->name;
         $category->slug = Str::slug($request->name);
         $category->save();        
-        // dd($request->all());
+        // dd($request->slug);
 
         return redirect(route('admin.categories.index'))->with('status', 'Categoria cadastrada com sucesso!');
     }
@@ -38,7 +38,7 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $category = Category::find($id);
-        return view('categories.edit', compact('category'));
+        return view('pages.categories.edit', compact('category'));
     }
 
     public function update(Request $request)

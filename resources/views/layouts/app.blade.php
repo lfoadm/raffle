@@ -135,7 +135,7 @@
 			<!--end::Header Section-->
 
             @yield('content')
-			@include('partials.footerApp')
+			@include('includes.footerApp')
 			
 		</div>
 		

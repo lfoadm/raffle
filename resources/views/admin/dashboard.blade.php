@@ -1140,7 +1140,7 @@
         <!--end::Content-->
     </div>
     <!--end::Content wrapper-->
-    @include('partials.footerAdmin')
+    @include('includes.footerAdmin')
 </div>
 <!--end:::Main-->
 
