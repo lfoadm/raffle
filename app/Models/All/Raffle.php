@@ -11,6 +11,8 @@ class Raffle extends Model
     /** @use HasFactory<\Database\Factories\Site\RaffleFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -240,19 +240,6 @@
                                         <!--end::Card header-->
                                         <!--begin::Card body-->
                                         <div class="card-body pt-0">
-                                            <!--begin::Input group-->
-                                            <div class="mb-10 fv-row">
-                                                <!--begin::Label-->
-                                                <label class="required form-label">Preço da rifa (R$)</label>
-                                                <!--end::Label-->
-                                                <!--begin::Input-->
-                                                <input type="text" name="total_value" class="form-control mb-2" placeholder="Valor total da rifa" value="" />
-                                                <!--end::Input-->
-                                                <!--begin::Description-->
-                                                <div class="text-muted fs-7">Defina o preço da rifa.</div>
-                                                <!--end::Description-->
-                                            </div>
-                                            <!--end::Input group-->
                                             <!--begin::Tax-->
                                             <div class="d-flex flex-wrap gap-5">
                                                 <!--begin::Input group-->
@@ -280,6 +267,19 @@
                                                 <!--end::Input group-->
                                             </div>
                                             <!--end:Tax-->
+                                            <!--begin::Input group-->
+                                            <div class="mb-10 fv-row">
+                                                <!--begin::Label-->
+                                                <label class="form-label">Preço da rifa (R$)</label>
+                                                <!--end::Label-->
+                                                <!--begin::Input-->
+                                                <input type="text" name="total_value" class="form-control mb-2" placeholder="Valor total da rifa" value="" />
+                                                <!--end::Input-->
+                                                <!--begin::Description-->
+                                                <div class="text-muted fs-7">Defina o preço da rifa.</div>
+                                                <!--end::Description-->
+                                            </div>
+                                            <!--end::Input group-->
                                         </div>
                                         <!--end::Card header-->
                                     </div>
@@ -315,3 +315,35 @@
 </div>
 <!--end:::Main-->
 @endsection
+@push('scripts')
+<script>
+    $(function() {
+        $("input[name='title']").on("input", function() {
+            $("input[name='slug']").val(StringToSlug($(this).val()));
+        });
+    });
+
+    function StringToSlug(Text) {
+        return Text
+            .toLowerCase()
+            .normalize("NFD") // Divide caracteres acentuados em base + acento
+            .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
+            .replace(/[^\w ]+/g, "") // Remove caracteres especiais restantes
+            .replace(/ +/g, "-"); // Substitui espaços por hífens
+    }
+
+    $(function() {
+    $("input[name='quota_count'], input[name='quota_price']").on("input", function() {
+        // Obtém os valores dos inputs
+        const quotaCount = parseFloat($("input[name='quota_count']").val()) || 0;
+        const quotaPrice = parseFloat($("input[name='quota_price']").val()) || 0;
+
+        // Calcula o total
+        const totalValue = quotaCount * quotaPrice;
+
+        // Define o valor no input de total_value
+        $("input[name='total_value']").val(totalValue.toFixed(2));
+    });
+});
+</script>
+@endpush

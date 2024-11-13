@@ -7,12 +7,18 @@ use App\Models\All\Category;
 use App\Models\All\Raffle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Intervention\Image\Laravel\Facades\Image;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class RaffleController extends Controller
 {
     public function index()
     {
-        $raffles = Raffle::where('id', Auth::user()->id)->orderBy('created_at', 'DESC')->paginate(9);
+        $raffles = Raffle::where('user_id', Auth::id())->orderBy('created_at', 'DESC')->paginate(9);
+        // dd($raffles);
         return view('pages.raffles.index', compact('raffles'));
     }
 
@@ -24,37 +30,114 @@ class RaffleController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
+
         $request->validate([
             'user_id' => 'required',
             'category_id' => 'required',
             'title' => 'required',
-            'slug' => 'required|unique:raffles,slug,',
+            'slug' => 'required|unique:raffles,slug',
             'description' => 'nullable',
             'image' => 'mimes:png,jpg,jpeg|max:2048',
             'status' => 'required',
-            'total_value' => 'required',
-            'quota_count' => 'required',
-            'quota_price' => 'required',
+            'total_value' => 'required|numeric',
+            'quota_count' => 'required|integer',
+            'quota_price' => 'required|numeric',
         ]);
 
-        $user = User::find($request->id);
-        $user->name = $request->name;
+        
+        $data = $request->only([
+            'category_id', 'title', 'description', 'status', 'quota_count', 'quota_price'
+        ]);
 
-        if($request->hasFile('image')){
-            if(File::exists(public_path('assets/media/avatars').'/'.$user->image))
-            {
-                File::delete(public_path('assets/media/avatars').'/'.$user->image);
-            }
-            $image = $request->file('image');
-            $file_extention = $request->file('image')->extension();
-            $file_name = Carbon::now()->timestamp.'.'.$file_extention;
-            $this->GenerateUserThumbnailsImage($image, $file_name);
-            $user->image = $file_name;
+        $data['user_id'] = Auth::id();
+        $data['slug'] = Str::slug($request->title);
+        $data['total_value'] = $data['quota_price'] * $data['quota_count'];
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $this->handleImageUpload($request->file('image'));
         }
-        $user->save();
-        //dd('aqui');
 
-        return redirect()->back()->with('status', 'Cadastro atualizado com sucesso!');
+        Raffle::create($data);
+        return redirect(route('raffle.index'))->with('status', 'Rifa publicada com sucesso!');
+    }
+
+    private function handleImageUpload($image)
+    {
+        $file_name = Carbon::now()->timestamp . '.' . $image->extension();
+        $destinationPath = public_path('assets/media/products');
+        
+        if(File::exists(public_path('assets/media/products').'/'.$file_name))
+            {
+                File::delete(public_path('assets/media/products').'/'.$file_name);
+            }
+
+        $this->generateThumbnail($image, $file_name, $destinationPath);
+        return $file_name;
+    }
+
+    private function generateThumbnail($image, $imageName, $destinationPath)
+    {
+        $img = Image::read($image->path());
+        $img->cover(300, 300, "top");
+        $img->resize(300, 300, function($constraint) {
+            $constraint->aspectRadio();
+        })->save($destinationPath.'/'.$imageName);
+    }
+
+    public function edit($id)
+    {
+        $raffle = Raffle::findOrFail($id);  // Encontra a rifa ou lança erro se não encontrada
+        return view('pages.raffles.edit', compact('raffle'));  // Passa a rifa para a view de edição
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'category_id' => 'required',
+            'title' => 'required',
+            'slug' => 'required|unique:raffles,slug,' . $id,
+            'description' => 'nullable',
+            'image' => 'mimes:png,jpg,jpeg|max:2048',
+            'status' => 'required',
+            'quota_count' => 'required|integer',
+            'quota_price' => 'required|numeric',
+        ]);
+
+        $raffle = Raffle::findOrFail($id);
+
+        $data = $request->only([
+            'category_id', 'title', 'description', 
+            'status', 'quota_count', 'quota_price'
+        ]);
+
+        $data['slug'] = Str::slug($request->title);
+        $data['total_value'] = $data['quota_price'] * $data['quota_count'];
+
+        if ($request->hasFile('image')) {
+            if ($raffle->image) {
+                Storage::delete('public/assets/media/products/' . $raffle->image);
+            }
+
+            $data['image'] = $this->handleImageUpload($request->file('image'));
+        }
+
+        $raffle->update($data);
+
+        return redirect(route('raffle.index'))->with('status', 'Rifa atualizada com sucesso!');
+        }
+
+        public function destroy($id)
+    {
+        $raffle = Raffle::findOrFail($id);
+
+        if ($raffle->image) {
+            Storage::delete('public/assets/media/products/' . $raffle->image);
+        }
+
+        $raffle->delete();
+
+        return redirect(route('raffle.index'))->with('status', 'Rifa excluída com sucesso!');
+
     }
 }

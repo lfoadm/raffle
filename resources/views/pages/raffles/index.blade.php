@@ -40,6 +40,7 @@
             <div id="kt_app_content" class="app-content flex-column-fluid">
                 <!--begin::Content container-->
                 <div id="kt_app_content_container" class="app-container container-xxl">
+                    @include('components.alert')
                     <!--begin::Products-->
                     <div class="card card-flush">
                         <!--begin::Card header-->
@@ -105,6 +106,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="fw-semibold text-gray-600">
+                                    @foreach ($raffles as $raffle)
                                     <tr>
                                         <td>
                                             <div class="form-check form-check-sm form-check-custom form-check-solid">
@@ -115,38 +117,50 @@
                                             <div class="d-flex align-items-center">
                                                 <!--begin::Thumbnail-->
                                                 <a href="apps/ecommerce/catalog/edit-product.html" class="symbol symbol-50px">
-                                                    <span class="symbol-label" style="background-image:url(assets/media//stock/ecommerce/1.png);"></span>
+                                                    <span class="symbol-label" style="background-image:url({{ asset('assets/media/products') }}/{{ $raffle->image }});"></span>
                                                 </a>
                                                 <!--end::Thumbnail-->
                                                 <div class="ms-5">
                                                     <!--begin::Title-->
-                                                    <a href="apps/ecommerce/catalog/edit-product.html" class="text-gray-800 text-hover-primary fs-5 fw-bold" data-kt-ecommerce-product-filter="product_name">Product 1</a>
+                                                    <a href="#"
+                                                        class="text-gray-800 text-hover-primary fs-5 fw-bold"
+                                                        data-kt-ecommerce-product-filter="product_name">{{ $raffle->title }}</a>
                                                     <!--end::Title-->
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="text-end pe-0">
-                                            <span class="fw-bold">04597007</span>
+                                            <span class="fw-bold">{{ $raffle->id }}</span>
                                         </td>
                                         <td class="text-end pe-0">
-                                            <span class="fw-bold">Categoriassss</span>
+                                            <span class="fw-bold">{{ $raffle->category->name }}</span>
                                         </td>
                                         <td class="text-end pe-0" data-order="3">
-                                            <span class="badge badge-light-warning">Low stock</span>
-                                            <span class="fw-bold text-warning ms-3">3</span>
+                                            <span class="badge badge-light-success">cotas</span>
+                                            <span class="fw-bold text-success ms-3">{{ $raffle->quota_count }}</span>
                                         </td>
-                                        <td class="text-end pe-0">138</td>
-                                        <td class="text-end pe-0">1.380</td>
+                                        <td class="text-end pe-0">{{ $raffle->quota_price }}</td>
+                                        <td class="text-end pe-0">{{ $raffle->total_value }}</td>
                                         <td class="text-end pe-0" data-order="Inactive">
                                             <!--begin::Badges-->
-                                            <div class="badge badge-light-danger">Inactive</div>
+                                            <div class="badge badge-light-danger">
+                                                @if($raffle->status === 'active')
+                                                <span class="badge badge-light-success">Em andamento</span>
+                                                @elseif($raffle->status === 'closed')
+                                                <span class="badge badge-light-secondary">Finalizada</span>
+                                                @else
+                                                <span class="badge badge-light-danger">Inativa</span>
+                                                @endif
+                                            </div>
                                             <!--end::Badges-->
                                         </td>
                                         <td class="text-end">
-                                            <a href="#" class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions 
-                                            <i class="ki-duotone ki-down fs-5 ms-1"></i></a>
+                                            <a href="#" class="btn btn-sm btn-light btn-flex btn-center btn-active-light-primary"
+                                                data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
+                                                <i class="ki-duotone ki-down fs-5 ms-1"></i></a>
                                             <!--begin::Menu-->
-                                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4" data-kt-menu="true">
+                                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
+                                                data-kt-menu="true">
                                                 <!--begin::Menu item-->
                                                 <div class="menu-item px-3">
                                                     <a href="apps/ecommerce/catalog/edit-product.html" class="menu-link px-3">Edit</a>
@@ -161,7 +175,7 @@
                                             <!--end::Menu-->
                                         </td>
                                     </tr>
-                                    
+                                    @endforeach
                                 </tbody>
                             </table>
                             <!--end::Table-->
