@@ -57,7 +57,7 @@
                             </div>
                             <div class="menu-item">
                                 <!--begin:Menu link-->
-                                <a class="menu-link" href="{{ route('raffle.index') }}">
+                                <a class="menu-link" href="{{ route('raffles.index') }}">
                                     <span class="menu-bullet">
                                         <span class="bullet bullet-dot"></span>
                                     </span>
@@ -123,11 +123,11 @@
                                 <!--begin:Menu item-->
                                 <div class="menu-item">
                                     <!--begin:Menu link-->
-                                    <a class="menu-link" href="pages/user-profile/campaigns.html">
+                                    <a class="menu-link" href="{{ route('admin.raffles') }}">
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>
                                         </span>
-                                        <span class="menu-title">Campaigns</span>
+                                        <span class="menu-title">Todas as rifas</span>
                                     </a>
                                     <!--end:Menu link-->
                                 </div>

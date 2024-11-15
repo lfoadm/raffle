@@ -86,7 +86,7 @@
                         <!--end::Card header-->
                         <!--begin::Card body-->
                         <div class="card-body pt-0">
-                            {{ $raffles }}
+                            
                             <!--begin::Table-->
                             @if($raffles->count() > 0)
                             <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_ecommerce_products_table">
@@ -99,6 +99,7 @@
                                         </th>
                                         <th class="min-w-200px">Título</th>
                                         <th class="text-center min-w-100px">Código</th>
+                                        <th class="text-center min-w-100px">Usuário</th>
                                         <th class="text-center min-w-100px">Categoria</th>
                                         <th class="text-center min-w-70px">Qtde. cotas</th>
                                         <th class="text-center min-w-100px">Valor cota</th>
@@ -131,9 +132,8 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-center pe-0">
-                                            <span class="fw-bold">{{ $raffle->id }}</span>
-                                        </td>
+                                        <td class="text-center pe-0"><span class="fw-bold">{{ $raffle->id }}</span></td>
+                                        <td class="text-center pe-0"><span class="fw-bold">{{ $raffle->user->name }}</span></td>
                                         <td class="text-center pe-0">
                                             <span class="fw-bold">{{ $raffle->category->name }}</span>
                                         </td>
@@ -141,8 +141,8 @@
                                             <span class="badge badge-light-success">cotas</span>
                                             <span class="fw-bold text-success ms-3">{{ $raffle->quota_count }}</span>
                                         </td>
-                                        <td class="text-center pe-0">R$ {{ number_format($raffle->quota_price, 2, ',', '.') }}</td>
-                                        <td class="text-center ">R$ {{ number_format($raffle->total_value, 2, ',', '.') }}</td>
+                                        <td class="text-center pe-0">R$ {{ $raffle->quota_price }}</td>
+                                        <td class="text-center ">R$ {{ $raffle->total_value }}</td>
                                         <td class="text-center pe-0" data-order="Inactive">
                                             <!--begin::Badges-->
                                             <div class="badge badge-light-danger">

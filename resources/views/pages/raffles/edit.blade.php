@@ -11,7 +11,7 @@
                 <!--begin::Page title-->
                 <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <!--begin::Title-->
-                    <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">Nova Rifa</h1>
+                    <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">Editando rifa: {{ $raffle->title }}</h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
@@ -26,7 +26,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Criando rifa</li>
+                        <li class="breadcrumb-item text-muted">Editando rifa</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -41,9 +41,10 @@
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-xxl">
                 <!--begin::Form-->
-                <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" data-kt-redirect="apps/ecommerce/catalog/products.html" action="{{ route('raffles.store') }}" method="POST" enctype="multipart/form-data">
+                <form id="kt_ecommerce_add_product_form" class="form d-flex flex-column flex-lg-row" data-kt-redirect="apps/ecommerce/catalog/products.html" action="{{ route('raffles.update', ['raffle'=> $raffle->id]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" />
+                    @method('PUT')
+                    {{-- <input type="hidden" name="id" value="{{ $raffle->id }}" /> --}}
                     <!--begin::Aside column-->
                     <div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
                         <!--begin::Thumbnail settings-->
@@ -60,10 +61,46 @@
                             <!--begin::Card body-->
                             <div class="card-body text-center pt-0">
                                 <!--begin::Image input-->
+
+                                <style>
+                                    .image-input-placeholder { 
+                                        background-image: url('{{ asset('assets/media/svg/files/blank-image.svg') }}'); 
+                                    }
+                                    [data-bs-theme="dark"] .image-input-placeholder { 
+                                        background-image: url('{{ asset('assets/media/svg/files/blank-image-dark.svg') }}'); 
+                                    }
+                                </style>
+                                
+                                <div class="image-input image-input-outline mb-3" 
+                                     data-kt-image-input="true" 
+                                     style="background-image: url('{{ $raffle->image ? asset('assets/media/products/' . $raffle->image) : asset('assets/media/svg/files/blank-image.svg') }}')">
+                                    <!-- Preview existing avatar -->
+                                    <div class="image-input-wrapper w-150px h-150px" 
+                                         style="background-image: url('{{ $raffle->image ? asset('assets/media/products/' . $raffle->image) : asset('assets/media/svg/files/blank-image.svg') }}');">
+                                    </div>
+                                    
+                                    <!--begin::Edit button-->
+                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Alterar imagem">
+                                        <i class="bi bi-pencil-fill fs-7"></i>
+                                        <input type="file" name="image" accept="image/*" />
+                                        <input type="hidden" name="image_remove" />
+                                    </label>
+                                    <!--end::Edit button-->
+                                    
+                                    <!--begin::Cancel button-->
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancelar"></span>
+                                    <!--end::Cancel button-->
+                                    
+                                    <!--begin::Remove button-->
+                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover"></span>
+                                    <!--end::Remove button-->
+                                </div>
+
+
                                 <!--begin::Image input placeholder-->
-                                <style>.image-input-placeholder { background-image: url('assets/media/svg/files/blank-image.svg'); } [data-bs-theme="dark"] .image-input-placeholder { background-image: url('assets/media/svg/files/blank-image-dark.svg'); }</style>
+                                {{-- <style>.image-input-placeholder { background-image: url('assets/media/svg/files/blank-image.svg'); } [data-bs-theme="dark"] .image-input-placeholder { background-image: url('assets/media/svg/files/blank-image-dark.svg'); }</style> --}}
                                 <!--end::Image input placeholder-->
-                                <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true">
+                                {{-- <div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3" data-kt-image-input="true">
                                     <!--begin::Preview existing avatar-->
                                     <div class="image-input-wrapper w-150px h-150px"></div>
                                     <!--end::Preview existing avatar-->
@@ -95,7 +132,7 @@
                                         </i>
                                     </span>
                                     <!--end::Remove-->
-                                </div>
+                                </div> --}}
                                 <!--end::Image input-->
                                 <!--begin::Description-->
                                 <div class="text-muted fs-7">Defina a imagem do produto. Apenas *.png, *.jpg e *.jpeg Os arquivos de imagem são aceitos</div>
@@ -115,7 +152,7 @@
                                 <!--end::Card title-->
                                 <!--begin::Card toolbar-->
                                 <div class="card-toolbar">
-                                    <div class="rounded-circle bg-success w-15px h-15px" id="kt_ecommerce_add_product_status"></div>
+                                    <div class="rounded-circle {{ $raffle->status == 'active' ? 'bg-success' : 'bg-danger' }} w-15px h-15px" id="kt_ecommerce_add_product_status"></div>
                                 </div>
                                 <!--begin::Card toolbar-->
                             </div>
@@ -125,8 +162,8 @@
                                 <!--begin::Select2-->
                                 <select name="status" class="form-select mb-2" data-control="select2" data-hide-search="true" data-placeholder="Select an option" id="kt_ecommerce_add_product_status_select">
                                     <option></option>
-                                    <option value="active" selected="selected">Ativo</option>
-                                    <option value="inactive">Inativo</option>
+                                    <option value="active" {{ $raffle->status == 'active' ? 'selected' : '' }}>Ativo</option>
+                                    <option value="inactive" {{ $raffle->status == 'inactive' ? 'selected' : '' }}>Inativo</option>
                                 </select>
                                 <!--end::Select2-->
                                 <!--begin::Description-->
@@ -157,7 +194,10 @@
                                 <select class="form-select mb-2" name="category_id" data-control="select2" data-placeholder="Selecione..." data-allow-clear="true">
                                     <option></option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <option value="{{ $category->id }}" 
+                                            @if($category->id == $raffle->category_id) selected @endif>
+                                            {{ $category->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 <!--end::Select2-->
@@ -177,7 +217,7 @@
                         <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-n2">
                             <!--begin:::Tab item-->
                             <li class="nav-item">
-                                <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab" href="#kt_ecommerce_add_product_general">Novo</a>
+                                <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab" href="#kt_ecommerce_add_product_general">Edição</a>
                             </li>
                             <!--end:::Tab item-->
                         </ul>
@@ -199,13 +239,13 @@
                                                 <label class="required form-label">TÍTULO DA RIFA</label>
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
-                                                <input type="text" name="title" class="form-control mb-2" placeholder="Nome da rifa" value="" />
+                                                <input type="text" name="title" class="form-control mb-2" placeholder="Nome da rifa" value="{{ $raffle->title }}" />
                                                 <!--end::Input-->
                                                     <!--begin::Label-->
                                                     <label class="required form-label">Slug</label>
                                                     <!--end::Label-->
                                                     <!--begin::Input-->
-                                                    <input type="text" name="slug" class="form-control mb-2" placeholder="Slug" value="" />
+                                                    <input type="text" name="slug" class="form-control mb-2" placeholder="Slug" value="{{ $raffle->slug }}" />
                                                     <div class="text-muted fs-7">Campo automático.</div>
                                                     <!--end::Input-->
                                                 </div>
@@ -217,7 +257,7 @@
                                                 <!--end::Label-->
                                                 <!--begin::Editor-->
                                                 {{-- <div id="kt_ecommerce_add_product_description" name="kt_ecommerce_add_product_description" class="min-h-200px mb-2"></div> --}}
-                                                <textarea type="text" name="description" class="form-control mb-2" placeholder="Descrição da rifa" value=""></textarea>
+                                                <textarea type="text" name="description" class="form-control mb-2" placeholder="Descrição da rifa" value="">{{ $raffle->description }}</textarea>
                                                 <!--end::Editor-->
                                                 <!--begin::Description-->
                                                 <div class="text-muted fs-7">Defina uma descrição para a rifa para melhor visibilidade.</div>
@@ -248,7 +288,7 @@
                                                     <label class="required form-label">Quantidade de cotas</label>
                                                     <!--end::Label-->
                                                     <!--begin::Select2-->
-                                                    <input type="text" name="quota_count" class="form-control mb-2" value="" />
+                                                    <input type="text" name="quota_count" class="form-control mb-2" value="{{ $raffle->quota_count }}" />
                                                     <!--end::Select2-->
                                                     <!--begin::Description-->
                                                     <div class="text-muted fs-7">Defina a quantidade de cotas.</div>
@@ -261,7 +301,8 @@
                                                     <label class="form-label">Valor de cada cota (R$)</label>
                                                     <!--end::Label-->
                                                     <!--begin::Input-->
-                                                    <input type="text" name="quota_price" class="form-control mb-2" value="" placeholder="0,00" id="quota_price" />
+                                                    {{-- <input type="text" name="quota_price" class="form-control mb-2" value="" placeholder="0,00" id="quota_price" /> --}}
+                                                    <input type="text" name="quota_price" class="form-control mb-2" value="{{ number_format($raffle->quota_price, 2, ',', '.') }}" placeholder="0,00" id="quota_price" />
                                                     <!--end::Input-->
                                                 </div>
                                                 <!--end::Input group-->
@@ -273,10 +314,10 @@
                                                 <label class="form-label">Preço da rifa (R$)</label>
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
-                                                <input type="text" name="total_value" class="form-control mb-2" placeholder="Valor total da rifa" value="" />
+                                                <input type="text" name="total_value" class="form-control mb-2" placeholder="Valor total da rifa" value="{{ $raffle->total_value }}" />
                                                 <!--end::Input-->
                                                 <!--begin::Description-->
-                                                <div class="text-muted fs-7">Defina o preço da rifa.</div>
+                                                <div class="text-muted fs-7">O valor total da rifa é definido de acordo com a quantidade e valor unitário de cotas.</div>
                                                 <!--end::Description-->
                                             </div>
                                             <!--end::Input group-->
@@ -294,8 +335,8 @@
                             <a href="{{ route('raffles.index') }}" id="kt_ecommerce_add_product_cancel" class="btn btn-light me-5">Cancelar</a>
                             <!--end::Button-->
                             <!--begin::Button-->
-                            <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-info">
-                                <span class="indicator-label">Publicar</span>
+                            <button type="submit" id="kt_ecommerce_add_product_submit" class="btn btn-warning">
+                                <span class="indicator-label">Atualizar</span>
                                 <span class="indicator-progress">Aguarde... 
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                             </button>
@@ -345,8 +386,6 @@
         $("input[name='total_value']").val(totalValue.toFixed(2));
     });
 
-    
-
     document.getElementById('quota_price').addEventListener('input', function (e) {
         let value = e.target.value;
 
@@ -372,19 +411,6 @@
 
         e.target.value = value;
     });
-
-    document.getElementById('raffle-form').addEventListener('submit', function(e) {
-        // Obtém o valor do campo
-        var quotaPrice = document.getElementById('quota_price').value;
-
-        // Remove o separador de milhar (ponto)
-        quotaPrice = quotaPrice.replace(/\./g, '').replace(',', '.');
-
-        // Atribui o valor sem ponto de volta ao campo de input
-        document.getElementById('quota_price').value = quotaPrice;
-    });
-
-    
 });
 </script>
 @endpush
