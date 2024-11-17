@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\All\Category;
+use App\Models\All\Raffle;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -38,5 +39,7 @@ class DatabaseSeeder extends Seeder
         ]);
         
         $this->call(CategorySeeder::class);
+        $this->call(RaffleSeeder::class);
+        
     }
 }

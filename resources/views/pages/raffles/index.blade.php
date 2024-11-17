@@ -92,15 +92,12 @@
                             <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_ecommerce_products_table">
                                 <thead>
                                     <tr class="text-start text-gray-500 fw-bold fs-7 text-uppercase gs-0">
-                                        <th class="w-10px pe-2">
-                                            <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
-                                                <input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#kt_ecommerce_products_table .form-check-input" value="1" />
-                                            </div>
-                                        </th>
                                         <th class="min-w-200px">Título</th>
                                         <th class="text-center min-w-100px">Código</th>
                                         <th class="text-center min-w-100px">Categoria</th>
                                         <th class="text-center min-w-70px">Qtde. cotas</th>
+                                        <th class="text-center min-w-70px">Cotas vendidas</th>
+                                        <th class="text-center min-w-70px">Cotas restantes</th>
                                         <th class="text-center min-w-100px">Valor cota</th>
                                         <th class="text-center min-w-150px">Valor Total</th>
                                         <th class="text-center min-w-100px">Status</th>
@@ -110,11 +107,6 @@
                                 <tbody class="fw-semibold text-gray-600">
                                     @foreach ($raffles as $raffle)
                                     <tr>
-                                        <td>
-                                            <div class="form-check form-check-sm form-check-custom form-check-solid">
-                                                <input class="form-check-input" type="checkbox" value="1" />
-                                            </div>
-                                        </td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <!--begin::Thumbnail-->
@@ -138,8 +130,13 @@
                                             <span class="fw-bold">{{ $raffle->category->name }}</span>
                                         </td>
                                         <td class="text-center pe-0" data-order="3">
-                                            <span class="badge badge-light-success">cotas</span>
-                                            <span class="fw-bold text-success ms-3">{{ $raffle->quota_count }}</span>
+                                            <span class="fw-bold text-success ms-3">{{ number_format($raffle->quota_count, 0, ',', '.') }}</span>
+                                        </td>
+                                        <td class="text-center pe-0" data-order="3">
+                                            <span class="fw-bold text-primary ms-3">50</span>
+                                        </td>
+                                        <td class="text-center pe-0" data-order="3">
+                                            <span class="fw-bold text-info ms-3">1.000</span>
                                         </td>
                                         <td class="text-center pe-0">R$ {{ number_format($raffle->quota_price, 2, ',', '.') }}</td>
                                         <td class="text-center ">R$ {{ number_format($raffle->total_value, 2, ',', '.') }}</td>
@@ -169,20 +166,20 @@
                                                 </div>
                                                 <!--end::Menu item-->
                                                 <!--begin::Menu item-->
+
                                                 <div class="menu-item px-3">
-                                                    {{-- <a href="#" class="menu-link px-3" data-kt-ecommerce-product-filter="delete_row">Apagar</a> --}}
-                                                    <a href="#" class="menu-link px-3" onclick="event.preventDefault(); document.getElementById('deactivate-form-{{ $raffle->id }}').submit();">
+                                                    <a href="#" class="menu-link px-3" onclick="event.preventDefault(); confirmDelete('{{ $raffle->id }}');">
                                                         Apagar
                                                     </a>
-                                                    
-                                                    <form id="deactivate-form-{{ $raffle->id }}" action="{{ route('raffles.disable', $raffle->id) }}" method="POST" style="display: none;">
+                                                
+                                                    <form id="deactivate-form-{{ $raffle->id }}" action="{{ route('raffles.disable', $raffle->id) }}" 
+                                                          method="POST" 
+                                                          style="display: none;">
                                                         @csrf
                                                         @method('PATCH')
                                                     </form>
                                                 </div>
-                                                <!--end::Menu item-->
                                             </div>
-                                            <!--end::Menu-->
                                         </td>
                                     </tr>
                                     @endforeach
@@ -232,3 +229,14 @@
     </div>
     <!--end:::Main-->
 @endsection
+
+@push('scripts')
+<script>
+    function confirmDelete(raffleId) {
+        const confirmAction = confirm("Tem certeza que deseja desativar esta rifa?");
+        if (confirmAction) {
+            document.getElementById(`deactivate-form-${raffleId}`).submit();
+        }
+    }
+</script>    
+@endpush

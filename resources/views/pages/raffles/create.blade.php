@@ -248,7 +248,9 @@
                                                     <label class="required form-label">Quantidade de cotas</label>
                                                     <!--end::Label-->
                                                     <!--begin::Select2-->
-                                                    <input type="text" name="quota_count" class="form-control mb-2" value="" />
+                                                    <input type="number" name="quota_count" id="quota_count" class="form-control" value="{{ old('quota_count') }}" placeholder="Digite a quantidade de cotas" />
+                                                    {{-- <input type="text" name="quota_count" class="form-control mb-2" value="" /> --}}
+
                                                     <!--end::Select2-->
                                                     <!--begin::Description-->
                                                     <div class="text-muted fs-7">Defina a quantidade de cotas.</div>
@@ -261,7 +263,8 @@
                                                     <label class="form-label">Valor de cada cota (R$)</label>
                                                     <!--end::Label-->
                                                     <!--begin::Input-->
-                                                    <input type="text" name="quota_price" class="form-control mb-2" value="" placeholder="0,00" id="quota_price" />
+                                                    <input type="text" name="quota_price" id="quota_price" class="form-control" value="{{ old('quota_price') }}" placeholder="Digite o preço por cota" />
+                                                    {{-- <input type="text" name="quota_price" class="form-control mb-2" value="" placeholder="0,00" id="quota_price" /> --}}
                                                     <!--end::Input-->
                                                 </div>
                                                 <!--end::Input group-->
@@ -269,11 +272,11 @@
                                             <!--end:Tax-->
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
-                                                <!--begin::Label-->
-                                                <label class="form-label">Preço da rifa (R$)</label>
-                                                <!--end::Label-->
                                                 <!--begin::Input-->
-                                                <input type="text" name="total_value" class="form-control mb-2" placeholder="Valor total da rifa" value="" />
+                                                <h2 class="mt-6">Total da RIFA: R$ <span id="total_value_display">0,00</span></h2>
+                                                <input type="hidden" name="total_value" id="total_value" value="0.00" />
+
+                                                {{-- <input type="text" name="total_value" class="form-control mb-2" placeholder="Valor total da rifa" value="" /> --}}
                                                 <!--end::Input-->
                                                 <!--begin::Description-->
                                                 <div class="text-muted fs-7">Defina o preço da rifa.</div>
@@ -332,20 +335,39 @@
             .replace(/ +/g, "-"); // Substitui espaços por hífens
     }
 
-    $(function() {
-    $("input[name='quota_count'], input[name='quota_price']").on("input", function() {
-        // Obtém os valores dos inputs
-        const quotaCount = parseFloat($("input[name='quota_count']").val()) || 0;
-        const quotaPrice = parseFloat($("input[name='quota_price']").val()) || 0;
+    document.addEventListener('DOMContentLoaded', function() {
+        const quotaCountInput = document.getElementById('quota_count');
+        const quotaPriceInput = document.getElementById('quota_price');
+        const totalValueInput = document.getElementById('total_value');
+        const totalValueDisplay = document.getElementById('total_value_display');
 
-        // Calcula o total
-        const totalValue = quotaCount * quotaPrice;
+        function formatCurrency(value) {
+            // Certifica-se de que é um número válido
+            return value.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
 
-        // Define o valor no input de total_value
-        $("input[name='total_value']").val(totalValue.toFixed(2));
-    });
+        function updateTotalValue() {
+            const quotaCount = parseInt(quotaCountInput.value) || 0;
+            const quotaPrice = parseFloat(
+                quotaPriceInput.value.replace(/\./g, '').replace(',', '.')
+            ) || 0;
 
-    
+            const totalValue = quotaCount * quotaPrice;
+
+            // Atualiza o valor exibido no <h2>
+            totalValueDisplay.textContent = formatCurrency(totalValue);
+
+            // Atualiza o valor no input hidden
+            totalValueInput.value = totalValue.toFixed(2);
+        }
+
+        // Adiciona eventos para atualizar o total_value
+        quotaCountInput.addEventListener('input', updateTotalValue);
+        quotaPriceInput.addEventListener('input', updateTotalValue);
+    });    
 
     document.getElementById('quota_price').addEventListener('input', function (e) {
         let value = e.target.value;
@@ -383,8 +405,5 @@
         // Atribui o valor sem ponto de volta ao campo de input
         document.getElementById('quota_price').value = quotaPrice;
     });
-
-    
-});
 </script>
 @endpush

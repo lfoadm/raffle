@@ -288,7 +288,8 @@
                                                     <label class="required form-label">Quantidade de cotas</label>
                                                     <!--end::Label-->
                                                     <!--begin::Select2-->
-                                                    <input type="text" name="quota_count" class="form-control mb-2" value="{{ $raffle->quota_count }}" />
+                                                    <input type="number" name="quota_count" id="quota_count" class="form-control" value="{{ old('quota_count', $raffle->quota_count) }}" placeholder="Digite a quantidade de cotas" />
+                                                    {{-- <input type="text" name="quota_count" class="form-control mb-2" value="{{ $raffle->quota_count }}" /> --}}
                                                     <!--end::Select2-->
                                                     <!--begin::Description-->
                                                     <div class="text-muted fs-7">Defina a quantidade de cotas.</div>
@@ -302,7 +303,8 @@
                                                     <!--end::Label-->
                                                     <!--begin::Input-->
                                                     {{-- <input type="text" name="quota_price" class="form-control mb-2" value="" placeholder="0,00" id="quota_price" /> --}}
-                                                    <input type="text" name="quota_price" class="form-control mb-2" value="{{ number_format($raffle->quota_price, 2, ',', '.') }}" placeholder="0,00" id="quota_price" />
+                                                    <input type="text" name="quota_price" id="quota_price" class="form-control" value="{{ old('quota_price', number_format($raffle->quota_price, 2, ',', '.')) }}" placeholder="Digite o preço por cota" />
+                                                    
                                                     <!--end::Input-->
                                                 </div>
                                                 <!--end::Input group-->
@@ -310,11 +312,11 @@
                                             <!--end:Tax-->
                                             <!--begin::Input group-->
                                             <div class="mb-10 fv-row">
-                                                <!--begin::Label-->
-                                                <label class="form-label">Preço da rifa (R$)</label>
-                                                <!--end::Label-->
+                                                
                                                 <!--begin::Input-->
-                                                <input type="text" name="total_value" class="form-control mb-2" placeholder="Valor total da rifa" value="{{ $raffle->total_value }}" />
+                                                <h2>Total da RIFA: R$ <span id="total_value_display">{{ number_format($raffle->total_value, 2, ',', '.') }}</span></h2>
+                                                <input type="hidden" name="total_value" id="total_value" value="{{ old('total_value', $raffle->total_value) }}" />
+                                                {{-- <input type="text" name="total_value" class="form-control mb-2" placeholder="Valor total da rifa" value="{{ $raffle->total_value }}" /> --}}
                                                 <!--end::Input-->
                                                 <!--begin::Description-->
                                                 <div class="text-muted fs-7">O valor total da rifa é definido de acordo com a quantidade e valor unitário de cotas.</div>
@@ -373,18 +375,41 @@
             .replace(/ +/g, "-"); // Substitui espaços por hífens
     }
 
-    $(function() {
-    $("input[name='quota_count'], input[name='quota_price']").on("input", function() {
-        // Obtém os valores dos inputs
-        const quotaCount = parseFloat($("input[name='quota_count']").val()) || 0;
-        const quotaPrice = parseFloat($("input[name='quota_price']").val()) || 0;
+    document.addEventListener('DOMContentLoaded', function() {
+        const quotaCountInput = document.getElementById('quota_count');
+        const quotaPriceInput = document.getElementById('quota_price');
+        const totalValueInput = document.getElementById('total_value');
+        const totalValueDisplay = document.getElementById('total_value_display');
 
-        // Calcula o total
-        const totalValue = quotaCount * quotaPrice;
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 2
+            }).replace('R$', '').trim(); // Remove "R$" para exibir no formato desejado
+        }
 
-        // Define o valor no input de total_value
-        $("input[name='total_value']").val(totalValue.toFixed(2));
+        function updateTotalValue() {
+            const quotaCount = parseInt(quotaCountInput.value) || 0;
+            const quotaPriceRaw = quotaPriceInput.value.replace(/\./g, '').replace(',', '.');
+            const quotaPrice = parseFloat(quotaPriceRaw) || 0;
+
+            const totalValue = quotaCount * quotaPrice;
+
+            // Atualiza o <h2> com o valor formatado
+            totalValueDisplay.textContent = formatCurrency(totalValue);
+
+            // Atualiza o input hidden
+            totalValueInput.value = totalValue.toFixed(2);
+        }
+
+        // Escuta os eventos de input nos campos
+        quotaCountInput.addEventListener('input', updateTotalValue);
+        quotaPriceInput.addEventListener('input', updateTotalValue);
     });
+    
+
+   
 
     document.getElementById('quota_price').addEventListener('input', function (e) {
         let value = e.target.value;
@@ -411,6 +436,5 @@
 
         e.target.value = value;
     });
-});
 </script>
 @endpush
