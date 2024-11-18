@@ -14,6 +14,7 @@ Auth::routes();
 
 #SITE ABERTO / SEM MIDDLEWARE
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/raffle/{raffle_slug}', [HomeController::class, 'show'])->name('raffle.show');
 
 // #CONTA DO USUÁRIO FINAL (CONSUMIDOR)
 Route::middleware(['auth'])->group(function() {
@@ -21,7 +22,6 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/account-dashboard', [UserController::class, 'dashboard'])->name('dashboard');
     Route::get('/account-profile', [UserController::class, 'profile'])->name('user.profile');
     Route::put('/account-profile/update/{user_id}', [UserController::class, 'user_update'])->name('user.update');
-
 
     #rifas
     Route::resource('/raffles', RaffleController::class)->names('raffles');

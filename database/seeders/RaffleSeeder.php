@@ -28,6 +28,8 @@ class RaffleSeeder extends Seeder
             $quotaCount = fake()->numberBetween(50, 500); // Número aleatório de cotas
             $quotaPrice = fake()->randomFloat(2, 10, 100); // Preço aleatório por cota
             $totalValue = $quotaCount * $quotaPrice;
+            $quotaSold = 0; // Total da rifa
+            $quotaBalance = $quotaCount - $quotaSold; // Total da rifa
 
             Raffle::create([
                 'user_id' => $users->random()->id, // Usuário aleatório
@@ -38,6 +40,8 @@ class RaffleSeeder extends Seeder
                 'image' => fake()->imageUrl(640, 480, 'raffles', true), // URL de imagem falsa
                 'status' => fake()->randomElement(['active', 'closed', 'inactive']),
                 'quota_count' => $quotaCount,
+                'quota_balance' => $quotaBalance, // Define o número de cotas
+                'quota_sold' => $quotaSold, // Define o número de cotas
                 'quota_price' => $quotaPrice,
                 'total_value' => $totalValue,
             ]);

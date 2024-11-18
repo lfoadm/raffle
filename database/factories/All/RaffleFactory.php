@@ -21,6 +21,8 @@ class RaffleFactory extends Factory
         $quotaCount = $this->faker->numberBetween(10, 100); // Número de cotas
         $quotaPrice = $this->faker->randomFloat(2, 5, 50); // Valor de cada cota
         $totalValue = $quotaCount * $quotaPrice; // Total da rifa
+        $quotaSold = 0; // Total da rifa
+        $quotaBalance = $quotaCount - $quotaSold; // Total da rifa
 
         return [
             'user_id' => User::factory(), // Cria ou relaciona com um usuário
@@ -31,6 +33,8 @@ class RaffleFactory extends Factory
             'image' => $this->faker->imageUrl(640, 480, 'business', true, 'raffle'), // Gera uma URL fictícia de imagem
             'status' => $this->faker->randomElement(['active', 'closed', 'inactive']), // Escolhe um status aleatório
             'quota_count' => $quotaCount, // Define o número de cotas
+            'quota_balance' => $quotaBalance, // Define o número de cotas
+            'quota_sold' => $quotaSold, // Define o número de cotas
             'quota_price' => $quotaPrice, // Define o preço de cada cota
             'total_value' => $totalValue, // Calcula o valor total
         ];

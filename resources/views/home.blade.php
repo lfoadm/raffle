@@ -32,9 +32,10 @@
                         <!--begin::Position-->
                         <div class="text-muted fs-6 fw-semibold mt-1">{{ $raffle->description }}</div>
                         <a href="#" class="text-gray-900 fw-bold text-hover-primary fs-3">R$ {{ number_format($raffle->quota_price, 2, ',', '.') }}</a>
+                        {{-- <img loading="lazy" src="{{ asset('assets/media/products') }}/{{ $raffle->image }}" width="330" height="400" alt="{{ $raffle->title }}" class="pc__img"> --}}
                         <!--begin::Position-->
                     </div>
-                    <!--end::Person-->
+                    <a class="btn btn-success position-relative me-5 mt-10" href="{{ route('raffle.show', ['raffle_slug' => $raffle->slug]) }}"><i class="bi bi-cart"></i>Comprar</a>
                 </div>
                 @endforeach
                 <!--end::Item-->

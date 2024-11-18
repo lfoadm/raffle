@@ -86,7 +86,7 @@
                         <!--end::Card header-->
                         <!--begin::Card body-->
                         <div class="card-body pt-0">
-                            {{ $raffles }}
+                            
                             <!--begin::Table-->
                             @if($raffles->count() > 0)
                             <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_ecommerce_products_table">
@@ -133,10 +133,10 @@
                                             <span class="fw-bold text-success ms-3">{{ number_format($raffle->quota_count, 0, ',', '.') }}</span>
                                         </td>
                                         <td class="text-center pe-0" data-order="3">
-                                            <span class="fw-bold text-primary ms-3">50</span>
+                                            <span class="fw-bold text-primary ms-3">{{ number_format($raffle->quota_sold, 0, ',', '.') }}</span>
                                         </td>
                                         <td class="text-center pe-0" data-order="3">
-                                            <span class="fw-bold text-info ms-3">1.000</span>
+                                            <span class="fw-bold text-info ms-3">{{ number_format($raffle->quota_balance, 0, ',', '.') }}</span>
                                         </td>
                                         <td class="text-center pe-0">R$ {{ number_format($raffle->quota_price, 2, ',', '.') }}</td>
                                         <td class="text-center ">R$ {{ number_format($raffle->total_value, 2, ',', '.') }}</td>

@@ -292,7 +292,7 @@
                                                     {{-- <input type="text" name="quota_count" class="form-control mb-2" value="{{ $raffle->quota_count }}" /> --}}
                                                     <!--end::Select2-->
                                                     <!--begin::Description-->
-                                                    <div class="text-muted fs-7">Defina a quantidade de cotas.</div>
+                                                    <div class="text-muted fs-7 mb-10">Defina a quantidade de cotas.</div>
                                                     <!--end::Description-->
                                                 </div>
                                                 <!--end::Input group-->
@@ -314,7 +314,11 @@
                                             <div class="mb-10 fv-row">
                                                 
                                                 <!--begin::Input-->
-                                                <h2>Total da RIFA: R$ <span id="total_value_display">{{ number_format($raffle->total_value, 2, ',', '.') }}</span></h2>
+                                                
+                                                <h2 class="mb-6">Total da RIFA: 
+                                                    <span class="fs-4 fw-semibold text-gray-500 me-1 align-self-start">R$</span>
+                                                    <span class="fs-2hx fw-bold text-gray-900 me-2 lh-1 ls-n2" id="total_value_display">{{ number_format($raffle->total_value, 2, ',', '.') }}</span>
+                                                </h2>
                                                 <input type="hidden" name="total_value" id="total_value" value="{{ old('total_value', $raffle->total_value) }}" />
                                                 {{-- <input type="text" name="total_value" class="form-control mb-2" placeholder="Valor total da rifa" value="{{ $raffle->total_value }}" /> --}}
                                                 <!--end::Input-->
