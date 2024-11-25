@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\All\Cart;
 use App\Models\All\Order;
 use App\Models\All\Raffle;
+use App\Models\All\RaffleQuota;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -64,5 +65,10 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function quotas()
+    {
+        return $this->hasMany(RaffleQuota::class);
     }
 }

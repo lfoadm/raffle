@@ -148,7 +148,7 @@ class RaffleController extends Controller
     {
         // Encontra a rifa junto com a categoria relacionada
         $raffle = Raffle::with('category')->findOrFail($id);
-        return view('pages.raffles.show', compact('raffle'));  // Passa a rifa para a view de exibicaop
+        //return view('pages.raffles.show', compact('raffle'));  // Passa a rifa para a view de exibicaop
     }
 
     public function disable($id)

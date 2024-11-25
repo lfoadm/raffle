@@ -5,12 +5,95 @@
     <!--begin::Container-->
     <div class="container">
         
-        {{ $raffle }}
-        <br><hr>
-        {{ $rraffles }}
         
+        <ul>
+            <li>NOME: {{ $raffle->title  }}</li>
+            <li>CODIGO: {{ $raffle->id  }}</li>
+            <li>DESCRICAO: {{ $raffle->description  }}</li>
+            <li>VENDEDOR: {{ $raffle->user->name  }}</li>
+        </ul>
+
+        <hr>
+
+        <div class="container">
+            <h1>{{ $raffle->title }}</h1>
+            <p>{{ $raffle->description }}</p>
+        
+            <div class="mt-4">
+                <h4>Escolha suas cotas:</h4>
+                <form action="{{ route('cart.add', $raffle->id) }}" method="POST" id="quotaForm">
+                    @csrf
+                    <div class="row">
+                        @foreach($raffle->quotas as $quota)
+                            <div class="col-2 mb-2">
+                                <button type="button" 
+                                        class="btn btn-block 
+                                            {{ $quota->status === 'available' ? 'btn-success' : ($quota->status === 'reserved' ? 'btn-warning' : 'btn-secondary') }}
+                                            quota-btn"
+                                        data-id="{{ $quota->id }}"
+                                        {{ $quota->status !== 'available' ? 'disabled' : '' }}>
+                                    {{ $quota->quota_number }}
+                                </button>
+                            </div>
+                        @endforeach
+                    </div>
+        
+                    <input type="hidden" name="selected_quotas[]" id="selectedQuotas">
+                    <button type="submit" class="btn btn-primary mt-3">Adicionar ao Carrinho</button>
+                </form>
+            </div>
+        </div>
+
+        <br><hr>
+
+        <h1>RIFAS DA MESMA CATEGORIA</h1>
+        @foreach($rraffles as $item)
+        <ul>
+            <li>NOME: {{ $item->title  }}</li>
+            <li>CODIGO: {{ $item->id  }}</li>
+            <li>DESCRICAO: {{ $item->description  }}</li>
+            <li>VENDEDOR: {{ $item->user->name  }}</li>
+        </ul>
+        @endforeach
+
+              
+
+                
     </div>
     <!--end::Container-->
 </div>
 <!--end::Team Section-->
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectedQuotas = [];
+        const quotaButtons = document.querySelectorAll('.quota-btn');
+
+        quotaButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const quotaId = this.getAttribute('data-id');
+
+                if (this.classList.contains('btn-info')) {
+                    // Remover do selecionado
+                    this.classList.remove('btn-info');
+                    this.classList.add('btn-success');
+                    const index = selectedQuotas.indexOf(quotaId);
+                    if (index !== -1) {
+                        selectedQuotas.splice(index, 1);
+                    }
+                } else {
+                    // Adicionar ao selecionado
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-info');
+                    selectedQuotas.push(quotaId);
+                }
+
+                // Atualizar o input oculto
+                document.getElementById('selectedQuotas').value = JSON.stringify(selectedQuotas);
+            });
+        });
+    });
+</script>
+@endpush

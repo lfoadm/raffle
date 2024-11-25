@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\All\CartController;
 use App\Http\Controllers\All\CategoryController;
 use App\Http\Controllers\All\HomeController;
 use App\Http\Controllers\All\RaffleController;
@@ -14,7 +15,7 @@ Auth::routes();
 
 #SITE ABERTO / SEM MIDDLEWARE
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/raffle/{raffle_slug}', [HomeController::class, 'show'])->name('raffle.show');
+Route::get('/home/raffles', [HomeController::class, 'allRaffles'])->name('home.raffles');
 
 // #CONTA DO USUÁRIO FINAL (CONSUMIDOR)
 Route::middleware(['auth'])->group(function() {
@@ -26,7 +27,14 @@ Route::middleware(['auth'])->group(function() {
     #rifas
     Route::resource('/raffles', RaffleController::class)->names('raffles');
     Route::patch('/raffles/disable/{raffle}', [RaffleController::class, 'disable'])->name('raffles.disable');
+    
+    #rifa detalhada
+    Route::get('/raffle/{raffle_slug}', [HomeController::class, 'show'])->name('raffle.show');
 
+    #carrinho
+    Route::post('/cart/add/{raffleId}', [CartController::class, 'add'])->name('cart.add');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    
     // Route::get('/raffles', [RaffleController::class, 'index'])->name('raffles.index');
     // Route::get('/raffles/create', [RaffleController::class, 'create'])->name('raffles.create');
     // Route::post('/raffles/store', [RaffleController::class, 'store'])->name('raffles.store');

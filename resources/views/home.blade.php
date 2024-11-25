@@ -22,12 +22,16 @@
                 @foreach ($raffles as $raffle)
                 <div class="text-center">
                     <!--begin::Photo-->
-                    <div class="octagon mx-auto mb-5 d-flex w-200px h-200px bgi-no-repeat bgi-size-contain bgi-position-center" style="background-image:url({{ $raffle->image ? asset('assets/media/products/' . $raffle->image) : asset('assets/media/svg/files/blank-image.svg') }})"></div>
+                    
+                        <a href="{{ route('raffle.show', ['raffle_slug' => $raffle->slug]) }}">
+                            <div class="octagon mx-auto mb-5 d-flex w-200px h-200px bgi-no-repeat bgi-size-contain bgi-position-center" style="background-image:url({{ $raffle->image ? asset('assets/media/products/' . $raffle->image) : asset('assets/media/svg/files/blank-image.svg') }})">
+                            </div>
+                        </a>
                     <!--end::Photo-->
                     <!--begin::Person-->
                     <div class="mb-0">
                         <!--begin::Name-->
-                        <a href="#" class="text-gray-900 fw-bold text-hover-primary fs-3">{{ $raffle->title }}</a>
+                        <a href="href="{{ route('raffle.show', ['raffle_slug' => $raffle->slug]) }}"" class="text-gray-900 fw-bold text-hover-primary fs-3">{{ $raffle->title }}</a>
                         <!--end::Name-->
                         <!--begin::Position-->
                         <div class="text-muted fs-6 fw-semibold mt-1">{{ $raffle->description }}</div>

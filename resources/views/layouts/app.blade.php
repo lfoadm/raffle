@@ -20,6 +20,7 @@
 		<!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
 		<link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
 		<link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+		@stack("styles")
 		<!--end::Global Stylesheets Bundle-->
 		<script>// Frame-busting to prevent site from being loaded within a frame without permission (click-jacking) if (window.top != window.self) { window.top.location.replace(window.self.location.href); }</script>
 	</head>
@@ -58,9 +59,9 @@
 									</button>
 									<!--end::Mobile menu toggle-->
 									<!--begin::Logo image-->
-									<a href="landing.html">
-										<img alt="Logo" src="assets/media/logos/logo-raffle.png" class="logo-default h-25px h-lg-30px" />
-										<img alt="Logo" src="assets/media/logos/logo-raffle-dark.png" class="logo-sticky h-20px h-lg-25px" />
+									<a href="{{ route('home') }}">
+										<img alt="Logo" src="{{ asset('assets/media/logos/logo-raffle.png') }}" class="logo-default h-25px h-lg-30px" />
+										<img alt="Logo" src="{{ asset('assets/media/logos/logo-raffle-dark.png') }}" class="logo-sticky h-20px h-lg-25px" />
 									</a>
 									<!--end::Logo image-->
 								</div>
@@ -76,7 +77,7 @@
 											</div>
 											
 											<div class="menu-item">
-												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="#how-it-works" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Todas as rifas</a>
+												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="{{ route('home.raffles') }}" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Todas as rifas</a>
 											</div>
 
 											@guest
@@ -162,6 +163,7 @@
 		<script src="assets/js/custom/landing.js"></script>
 		<script src="assets/js/custom/pages/pricing/general.js"></script>
 		<!--end::Custom Javascript-->
+		@stack("scripts")
 		<!--end::Javascript-->
 	</body>
 	<!--end::Body-->

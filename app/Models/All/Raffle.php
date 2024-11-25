@@ -32,4 +32,9 @@ class Raffle extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function quotas()
+    {
+        return $this->hasMany(RaffleQuota::class);
+    }
 }

@@ -11,10 +11,7 @@ use Illuminate\Support\Str;
 
 class RaffleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
         $users = User::all(); // Obtém todos os usuários
         $categories = Category::all(); // Obtém todas as categorias
@@ -24,27 +21,34 @@ class RaffleSeeder extends Seeder
             return;
         }
 
+        // Cria 20 rifas
         for ($i = 1; $i <= 20; $i++) {
             $quotaCount = fake()->numberBetween(50, 500); // Número aleatório de cotas
             $quotaPrice = fake()->randomFloat(2, 10, 100); // Preço aleatório por cota
             $totalValue = $quotaCount * $quotaPrice;
-            $quotaSold = 0; // Total da rifa
-            $quotaBalance = $quotaCount - $quotaSold; // Total da rifa
+            $quotaSold = 0; // Inicialmente nenhuma cota foi vendida
+            $quotaBalance = $quotaCount - $quotaSold; // Saldo de cotas
 
-            Raffle::create([
-                'user_id' => $users->random()->id, // Usuário aleatório
-                'category_id' => $categories->random()->id, // Categoria aleatória
-                'title' => fake()->sentence(3),
-                'slug' => Str::slug(fake()->sentence(3) . '-' . $i),
-                'description' => fake()->paragraph(),
-                'image' => fake()->imageUrl(640, 480, 'raffles', true), // URL de imagem falsa
-                'status' => fake()->randomElement(['active', 'closed', 'inactive']),
-                'quota_count' => $quotaCount,
-                'quota_balance' => $quotaBalance, // Define o número de cotas
-                'quota_sold' => $quotaSold, // Define o número de cotas
-                'quota_price' => $quotaPrice,
-                'total_value' => $totalValue,
-            ]);
+            // Criação de Rifa e Cotação automaticamente
+            Raffle::factory()
+                ->create([
+                    'user_id' => $users->random()->id, // Usuário aleatório
+                    'category_id' => $categories->random()->id, // Categoria aleatória
+                    'title' => fake()->sentence(3),
+                    'slug' => Str::slug(fake()->sentence(3) . '-' . $i),
+                    'description' => fake()->paragraph(),
+                    'image' => fake()->imageUrl(640, 480, 'raffles', true), // URL de imagem falsa
+                    'status' => fake()->randomElement(['active', 'closed', 'inactive']),
+                    'quota_count' => $quotaCount,
+                    'quota_balance' => $quotaBalance,
+                    'quota_sold' => $quotaSold,
+                    'quota_price' => $quotaPrice,
+                    'total_value' => $totalValue,
+                ]);
+
+            // Após a criação da rifa, as cotas são criadas automaticamente pela factory de Raffle
         }
+
+        $this->command->info('Rifas e cotas criadas com sucesso!');
     }
 }
