@@ -36,14 +36,6 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
     Route::delete('/cart/remove-raffle', [CartController::class, 'removeRaffle'])->name('cart.removeRaffle');
 
-    //leandro
-
-    
-    // Route::get('/raffles', [RaffleController::class, 'index'])->name('raffles.index');
-    // Route::get('/raffles/create', [RaffleController::class, 'create'])->name('raffles.create');
-    // Route::post('/raffles/store', [RaffleController::class, 'store'])->name('raffles.store');
-    // Route::get('/raffles/edit/{raffle_id}', [RaffleController::class, 'edit'])->name('raffles.edit');
-    // Route::put('/raffles/update/{raffle_id}', [RaffleController::class, 'update'])->name('raffles.update');
 });
 
 // #CONTA DO ADMINISTRADOR

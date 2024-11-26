@@ -56,19 +56,9 @@
                                         <td class="text-center pe-0" data-order="3"><span class="badge badge-light-info">{{ implode(', ', $group['quota_numbers']) }}</span></td>
                                         <td class="text-center pe-0">R$ {{ number_format($group['unit_price'], 2, ',', '.') }}</td>
                                         <td class="text-center pe-0">R$ {{ number_format($group['total_price'], 2, ',', '.') }}</td>
+                                        
                                         <td class="text-center pe-0">
-                                            {{-- <form action="{{ route('cart.removeRaffle', $group['items']->pluck('id')->toArray()) }}" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <a href="javascript:void(0)" class="remove-cart">
-                                                    <svg width="10" height="10" viewBox="0 0 10 10" fill="#767676" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M0.259435 8.85506L9.11449 0L10 0.885506L1.14494 9.74056L0.259435 8.85506Z" />
-                                                        <path d="M0.885506 0.0889838L9.74057 8.94404L8.85506 9.82955L0 0.97449L0.885506 0.0889838Z" />
-                                                    </svg>
-                                                </a>
-                                            </form> --}}
-
-                                            <form id="remove-cart-{{ $loop->index }}" action="{{ route('cart.removeRaffle') }}" method="post">
+                                            {{-- <form id="remove-cart-{{ $loop->index }}" action="{{ route('cart.removeRaffle') }}" method="post">
                                                 @csrf
                                                 @method('DELETE')
                                                 <!-- Campo hidden para enviar os IDs -->
@@ -79,9 +69,27 @@
                                                         <path d="M0.885506 0.0889838L9.74057 8.94404L8.85506 9.82955L0 0.97449L0.885506 0.0889838Z" />
                                                     </svg>
                                                 </a>
+                                            </form> --}}
+
+                                            <form id="remove-cart-{{ $loop->index }}" action="{{ route('cart.removeRaffle') }}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <!-- Campos hidden individuais para enviar os IDs -->
+                                                @foreach ($group['items'] as $item)
+                                                    <input type="hidden" name="raffle_ids[]" value="{{ $item['raffle_quota_id'] }}">
+                                                @endforeach
+                                                <a href="javascript:void(0);" class="remove-cart" data-form-id="remove-cart-{{ $loop->index }}">
+                                                    <svg width="14" height="14" viewBox="0 0 10 10" fill="#767676" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M0.259435 8.85506L9.11449 0L10 0.885506L1.14494 9.74056L0.259435 8.85506Z" />
+                                                        <path d="M0.885506 0.0889838L9.74057 8.94404L8.85506 9.82955L0 0.97449L0.885506 0.0889838Z" />
+                                                    </svg>
+                                                </a>
                                             </form>
 
+                                            
+                                            
                                         </td>
+
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -115,13 +123,6 @@
 
 @push('scripts')
 <script>
-    // $(function() {
-    //     $(".remove-cart").on("click", function(){
-    //         $(this).closest('form').submit();
-    //     });
-
-    // });
-
     document.querySelectorAll('.remove-cart').forEach(button => {
         button.addEventListener('click', function (event) {
             event.preventDefault();
@@ -134,9 +135,5 @@
             }
         });
     });
-
-
-
-
 </script>
 @endpush

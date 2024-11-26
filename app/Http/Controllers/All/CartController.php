@@ -115,27 +115,26 @@ class CartController extends Controller
     /**
      * Remove uma cota do carrinho.
      */
-    public function remove($itemId)
-    {
-        $cartItem = CartItem::findOrFail($itemId);
+    // public function remove($itemId)
+    // {
+    //     $cartItem = CartItem::findOrFail($itemId);
     
-        // Atualiza o status da cota para "available"
-        $raffleQuota = $cartItem->raffleQuota;
-        $raffleQuota->update(['status' => 'available']);
+    //     // Atualiza o status da cota para "available"
+    //     $raffleQuota = $cartItem->raffleQuota;
+    //     $raffleQuota->update(['status' => 'available']);
 
-        // Remove o item do carrinho
-        $cartItem->delete();
+    //     // Remove o item do carrinho
+    //     $cartItem->delete();
 
-        return redirect()->route('cart.show')->with('danger', 'Item removido do carrinho.');
-    }
+    //     return redirect()->route('cart.show')->with('danger', 'Item removido do carrinho.');
+    // }
 
 
     public function removeRaffle(Request $request)
     {
         // Recupera os IDs das cotas a serem removidas
-        $raffleIds = $request->input('raffle_ids');
+        $raffleIds = $request->input('raffle_ids', []);
 
-        // dd($raffleIds);
         // Verifica se os IDs das cotas foram passados
         if (empty($raffleIds)) {
             return redirect()->back()->withErrors(['raffle_ids' => 'Nenhuma cota foi selecionada para remoção.']);
@@ -159,6 +158,39 @@ class CartController extends Controller
 
         return redirect()->route('cart.show')->with('danger', 'Cotas removidas do carrinho.');
     }
+
+
+
+
+    // public function removeRaffle(Request $request)
+    // {
+    //     // Recupera os IDs das cotas a serem removidas
+    //     $raffleIds = $request->input('raffle_ids');
+
+    //     // dd($raffleIds);
+    //     // Verifica se os IDs das cotas foram passados
+    //     if (empty($raffleIds)) {
+    //         return redirect()->back()->withErrors(['raffle_ids' => 'Nenhuma cota foi selecionada para remoção.']);
+    //     }
+
+    //     // Identifica o usuário logado
+    //     $userId = Auth::id();
+
+    //     // Busca o carrinho aberto do usuário
+    //     $cart = Cart::where('user_id', $userId)->first();
+
+    //     if (!$cart) {
+    //         return redirect()->back()->withErrors(['cart' => 'Carrinho não encontrado.']);
+    //     }
+
+    //     // Remove os itens do carrinho com os IDs das cotas selecionadas
+    //     CartItem::whereIn('raffle_quota_id', $raffleIds)->where('cart_id', $cart->id)->delete();
+
+    //     // Atualiza as cotas removidas para o status 'available'
+    //     RaffleQuota::whereIn('id', $raffleIds)->update(['status' => 'available']);
+
+    //     return redirect()->route('cart.show')->with('danger', 'Cotas removidas do carrinho.');
+    // }
 
 
    
