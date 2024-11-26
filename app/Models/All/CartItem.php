@@ -17,4 +17,9 @@ class CartItem extends Model
     {
         return $this->belongsTo(Raffle::class);
     }
+
+    public function raffleQuota()
+    {
+        return $this->belongsTo(RaffleQuota::class, 'raffle_quota_id');
+    }
 }

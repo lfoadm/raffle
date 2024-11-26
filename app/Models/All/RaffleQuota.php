@@ -34,6 +34,16 @@ class RaffleQuota extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function cartItem()
+    {
+        return $this->hasOne(CartItem::class);
+    }
+
+    public function orderItem()
+    {
+        return $this->hasOne(OrderItem::class);
+    }
+
     /**
      * Escopo para cotas disponíveis.
      */

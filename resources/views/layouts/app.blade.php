@@ -82,16 +82,13 @@
 
 											@guest
 											@else
-											<div class="menu-item">
-												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="{{ route('dashboard') }}" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Painel</a>
-											</div> 
+												<div class="menu-item">
+													<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="{{ route('dashboard') }}" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Painel</a>
+												</div> 
 											@endguest
 
-											{{-- <div class="menu-item">
-												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="#team" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Team</a>
-											</div>
 											
-											<div class="menu-item">
+											{{-- <div class="menu-item">
 												<a class="menu-link nav-link py-3 px-4 px-xxl-6" href="#portfolio" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">Portfolio</a>
 											</div>
 											
@@ -104,16 +101,33 @@
 									</div>
 								</div>
 
-								<!--end::Menu wrapper-->
+								@guest
+								@else
+									
+								@endguest
+								
 								<!--begin::Toolbar-->
                                 @guest
-								<div class="flex-equal text-end ms-1">
-									<a href="{{ route('login') }}" class="btn btn-warning">Minha conta</a>
-								</div>
+									<div class="flex-equal text-end ms-1">
+										<a href="{{ route('login') }}" class="btn btn-warning">Minha conta</a>
+									</div>
                                 @else
-                                <div class="flex-equal text-end ms-1">
-									<a href="{{ route('dashboard') }}" class="btn btn-warning">{{ Auth::user()->name }}</a>
+								@if(Auth::user()->cart)
+								<div class="flex-equal text-end ms-1">
+									<a class="btn btn-info" href="{{ route('cart.show') }}" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">
+										<span class="ms-2">Carrinho</span>
+										<div class="position-relative d-inline-block">
+											<i class="ki-duotone ki-handcart fs-2" style="font-size: 3.5rem;"></i>
+											@if(Auth::user()->cart && Auth::user()->cart->items->count() > 0)
+												<span class="badge badge-success position-absolute top-0 start-100 translate-middle">
+													{{ Auth::user()->cart->items->count() }}
+												</span>
+											@endif
+										</div>
+									</a>
 								</div>
+							
+								@endif
                                 @endguest
 								<!--end::Toolbar-->
 							</div>

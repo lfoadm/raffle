@@ -19,7 +19,7 @@ class HomeController extends Controller
     public function show($raffle_slug)
     {
         $raffle = Raffle::where('slug', $raffle_slug)->first();
-        $rraffles = Raffle::where('slug', '<>', $raffle_slug)->where('category_id', $raffle->category->id)->get()->take(13);
+        $rraffles = Raffle::where('slug', '<>', $raffle_slug)->where('category_id', $raffle->category->id)->get()->take(2);
         $quotas = RaffleQuota::where('raffle_id', $raffle->id)->get();
 
         $groupedQuotas = [

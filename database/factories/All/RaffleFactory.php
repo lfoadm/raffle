@@ -31,10 +31,10 @@ class RaffleFactory extends Factory
             'image' => $this->faker->imageUrl(640, 480, 'business', true, 'raffle'), // URL fictícia de imagem
             'status' => $this->faker->randomElement(['active', 'closed', 'inactive']), // Status aleatório
             'quota_count' => $quotaCount, // Número de cotas
-            'quota_balance' => $quotaBalance, // Saldo de cotas
-            'quota_sold' => $quotaSold, // Nenhuma cota vendida
+            //'quota_balance' => $quotaBalance, // Saldo de cotas
+            //'quota_sold' => $quotaSold, // Nenhuma cota vendida
             'quota_price' => $quotaPrice, // Preço de cada cota
-            'total_value' => $totalValue, // Valor total
+            //'total_value' => $totalValue, // Valor total
         ];
     }
 

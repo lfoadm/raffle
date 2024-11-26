@@ -25,9 +25,9 @@ class RaffleSeeder extends Seeder
         for ($i = 1; $i <= 20; $i++) {
             $quotaCount = fake()->numberBetween(50, 500); // Número aleatório de cotas
             $quotaPrice = fake()->randomFloat(2, 10, 100); // Preço aleatório por cota
-            $totalValue = $quotaCount * $quotaPrice;
-            $quotaSold = 0; // Inicialmente nenhuma cota foi vendida
-            $quotaBalance = $quotaCount - $quotaSold; // Saldo de cotas
+            //$totalValue = $quotaCount * $quotaPrice;
+            //$quotaSold = 0; // Inicialmente nenhuma cota foi vendida
+            //$quotaBalance = $quotaCount - $quotaSold; // Saldo de cotas
 
             // Criação de Rifa e Cotação automaticamente
             Raffle::factory()
@@ -40,10 +40,10 @@ class RaffleSeeder extends Seeder
                     'image' => fake()->imageUrl(640, 480, 'raffles', true), // URL de imagem falsa
                     'status' => fake()->randomElement(['active', 'closed', 'inactive']),
                     'quota_count' => $quotaCount,
-                    'quota_balance' => $quotaBalance,
-                    'quota_sold' => $quotaSold,
+                    //'quota_balance' => $quotaBalance,
+                    //'quota_sold' => $quotaSold,
                     'quota_price' => $quotaPrice,
-                    'total_value' => $totalValue,
+                    //'total_value' => $totalValue,
                 ]);
 
             // Após a criação da rifa, as cotas são criadas automaticamente pela factory de Raffle

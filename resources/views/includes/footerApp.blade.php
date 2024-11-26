@@ -51,7 +51,7 @@
                 <div class="d-flex align-items-center order-2 order-md-1">
                     <!--begin::Logo-->
                     <a href="landing.html">
-                        <img alt="Logo" src="assets/media/logos/logo-raffle.png" class="h-15px h-md-20px" />
+                        <img alt="Logo" src="{{ asset('assets/media/logos/logo-raffle.png') }}" class="h-15px h-md-20px" />
                     </a>
                     <!--end::Logo image-->
                     <!--begin::Logo image-->

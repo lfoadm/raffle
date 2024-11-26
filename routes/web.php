@@ -33,7 +33,11 @@ Route::middleware(['auth'])->group(function() {
 
     #carrinho
     Route::post('/cart/add/{raffleId}', [CartController::class, 'add'])->name('cart.add');
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
+    Route::delete('/cart/remove-raffle', [CartController::class, 'removeRaffle'])->name('cart.removeRaffle');
+
+    //leandro
+
     
     // Route::get('/raffles', [RaffleController::class, 'index'])->name('raffles.index');
     // Route::get('/raffles/create', [RaffleController::class, 'create'])->name('raffles.create');

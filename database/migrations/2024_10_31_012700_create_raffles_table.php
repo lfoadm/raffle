@@ -21,10 +21,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->enum('status', ['active', 'closed', 'inactive'])->default('active');
             $table->integer('quota_count'); // quantidade de cotas
-            $table->integer('quota_balance');  // Quantidade de cotas disponíveis
-            $table->integer('quota_sold')->default(0);     // Quantidade de cotas já vendidas
-            $table->decimal('quota_price', 10, 2); // valor da cota antes (->storedAs('total_value / quota_count'))
-            $table->decimal('total_value', 10, 2); // total da rifa
+            $table->decimal('quota_price', 10, 2); // valor da cota
             $table->timestamps();
         });
     }

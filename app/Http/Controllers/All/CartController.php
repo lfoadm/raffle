@@ -13,20 +13,6 @@ use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
-    public function index()
-    {
-        if(!$cart = Cart::where('user_id', Auth::id())->first())
-        {
-            return back()->withErrors(['status' => 'Erro ao processar as cotas selecionadas.']);
-        };
-        // dd($cart->id);
-
-
-        $items = CartItem::where('cart_id', $cart->id)->get();
-        //dd($items);
-        return view('pages.cart.index', compact('items'));
-    }
-
     public function add(Request $request, $raffleId)
     {
         // Decodificar o JSON no campo 'selected_quotas'
@@ -40,51 +26,59 @@ class CartController extends Controller
         // Substituir o campo original para validação
         $request->merge(['selected_quotas' => $selectedQuotas]);
 
-        // dd($request->all());
         // Validar os dados
         $request->validate([
             'selected_quotas' => 'required|array|min:1', // Garante que cotas foram enviadas
             'selected_quotas.*' => 'integer|exists:raffle_quotas,id', // Garante que as cotas existem no banco
         ]);
 
-        $request->validate([
-            'selected_quotas' => 'required|array|min:1', // Garante que cotas foram enviadas
-            'selected_quotas.*' => 'integer|exists:raffle_quotas,id', // Garante que as cotas existem no banco
-        ]);
-        
         // Identifica o usuário logado
         $userId = Auth::id();
-        
+
         // Busca ou cria um carrinho para o usuário
-        $cart = Cart::firstOrCreate(
-            ['user_id' => $userId]
-        );
-        // dd($cart);
+        $cart = Cart::firstOrCreate(['user_id' => $userId]);
+
+        //observa se outra pessoa já pegou a cota
         
-        // Adiciona as cotas selecionadas como itens do carrinho
-        foreach ($request->selected_quotas as $quotaId) {
-            // Busca a cota no banco de dados
-            $raffleQuota = RaffleQuota::findOrFail($quotaId);
-            //dd($raffleQuota->raffle);
+        if ($quotaBlock = RaffleQuota::whereIn('id', $request->selected_quotas)->where('status', 'reserved')->get()->count() > 0) {
+            return redirect()->back()->with('danger', 'Cotas indisponíveis, revise a sua rifa.');
+        }
         
+
+        // Busca as cotas selecionadas no banco de dados em um único query
+        $raffleQuotas = RaffleQuota::whereIn('id', $request->selected_quotas)
+            ->where('status', 'available') // Verifica se as cotas estão disponíveis
+            ->get();
+
+        // Verifica se todas as cotas são válidas e disponíveis
+        if ($raffleQuotas->count() !== count($request->selected_quotas)) {
+            return back()->withErrors(['danger' => 'Uma ou mais cotas não estão disponíveis.']);
+        }
+
+        // Adiciona as cotas ao carrinho e atualiza o status para "reserved"
+        foreach ($raffleQuotas as $raffleQuota) {
             // Verifica se a cota já está no carrinho
-            $existingItem = CartItem::where('cart_id', $cart->id)->where('raffle_quota_id', $quotaId)->first();
-        
+            $existingItem = CartItem::where('cart_id', $cart->id)
+                ->where('raffle_quota_id', $raffleQuota->id)
+                ->first();
+
             if (!$existingItem) {
                 // Adiciona nova cota ao carrinho
                 CartItem::create([
                     'cart_id' => $cart->id,
                     'raffle_id' => $raffleQuota->raffle_id, // Obtém o ID da rifa associada
-                    'raffle_quota_id' => $quotaId, // ID da cota específica
-                    'quota_amount' => 1, // Quantidade de cotas (para rifas é geralmente 1)
+                    'raffle_quota_id' => $raffleQuota->id, // ID da cota específica
                     'unit_price' => $raffleQuota->raffle->quota_price, // Preço unitário da cota
-                    //'total_price' => $raffleQuota->raffle->quota_price, // Total baseado na quantidade (1 neste caso)
                 ]);
+
+                // Atualiza o status da cota para "reserved"
+                $raffleQuota->update(['status' => 'reserved']);
             }
         }
-        
-        return redirect()->route('cart.index')->with('status', 'Cotas adicionadas ao carrinho.');
+
+        return redirect()->back()->with('status', 'Cotas adicionadas ao carrinho e reservadas.');
     }
+    
 
     /**
      * Exibe o carrinho atual.
@@ -92,14 +86,30 @@ class CartController extends Controller
     public function show()
     {
         $userId = Auth::id();
+        
+        // Busca o carrinho do usuário com itens e cotas
+        $cart = Cart::with(['items.raffleQuota.raffle'])->where('user_id', $userId)->first();
+        // dd($cart);
 
-        // Busca o carrinho do usuário
-        $cart = Cart::with('items.raffleQuota')
-            ->where('user_id', $userId)
-            ->where('status', 'open')
-            ->first();
+        // if (!$cart || $cart->items->isEmpty()) {
+        //     return view('pages.cart.show', ['cartItemsGrouped' => []])->with('status', 'Seu carrinho está vazio.');
+        // }
 
-        return view('cart.show', compact('cart'));
+        // Agrupa os itens por rifa
+        $cartItemsGrouped = $cart->items->groupBy('raffleQuota.raffle.title')->map(function ($group) {
+            return [
+                'raffle_name' => $group->first()->raffleQuota->raffle->title,
+                'raffle_image' => $group->first()->raffleQuota->raffle->image,
+                'quota_numbers' => $group->pluck('raffleQuota.quota_number')->toArray(),
+                'raffle_quota_id' => $group->pluck('raffleQuota.id')->toArray(),
+                'quota_count' => $group->count(),
+                'unit_price' => $group->first()->raffleQuota->raffle->quota_price,
+                'total_price' => $group->count() * $group->first()->raffleQuota->raffle->quota_price,
+                'items' => $group
+            ];
+        });
+
+        return view('pages.cart.show', compact('cartItemsGrouped'));
     }
 
     /**
@@ -107,15 +117,53 @@ class CartController extends Controller
      */
     public function remove($itemId)
     {
+        $cartItem = CartItem::findOrFail($itemId);
+    
+        // Atualiza o status da cota para "available"
+        $raffleQuota = $cartItem->raffleQuota;
+        $raffleQuota->update(['status' => 'available']);
+
+        // Remove o item do carrinho
+        $cartItem->delete();
+
+        return redirect()->route('cart.show')->with('danger', 'Item removido do carrinho.');
+    }
+
+
+    public function removeRaffle(Request $request)
+    {
+        // Recupera os IDs das cotas a serem removidas
+        $raffleIds = $request->input('raffle_ids');
+
+        // dd($raffleIds);
+        // Verifica se os IDs das cotas foram passados
+        if (empty($raffleIds)) {
+            return redirect()->back()->withErrors(['raffle_ids' => 'Nenhuma cota foi selecionada para remoção.']);
+        }
+
+        // Identifica o usuário logado
         $userId = Auth::id();
 
-        // Encontra o item no carrinho do usuário e remove
-        CartItem::whereHas('cart', function ($query) use ($userId) {
-            $query->where('user_id', $userId)->where('status', 'open');
-        })->where('id', $itemId)->delete();
+        // Busca o carrinho aberto do usuário
+        $cart = Cart::where('user_id', $userId)->first();
 
-        return redirect()->route('cart.show')->with('success', 'Item removido do carrinho.');
+        if (!$cart) {
+            return redirect()->back()->withErrors(['cart' => 'Carrinho não encontrado.']);
+        }
+
+        // Remove os itens do carrinho com os IDs das cotas selecionadas
+        CartItem::whereIn('raffle_quota_id', $raffleIds)->where('cart_id', $cart->id)->delete();
+
+        // Atualiza as cotas removidas para o status 'available'
+        RaffleQuota::whereIn('id', $raffleIds)->update(['status' => 'available']);
+
+        return redirect()->route('cart.show')->with('danger', 'Cotas removidas do carrinho.');
     }
+
+
+   
+    
+    
 
     /**
      * Finaliza o carrinho.

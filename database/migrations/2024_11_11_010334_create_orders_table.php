@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Usuário que fez o pedido
             $table->decimal('total_amount', 10, 2); // Valor total do pedido
-            $table->string('status')->default('pending'); // Status do pedido (por exemplo, "pendente", "pago", "cancelado")
+            $table->enum('status', ['pending', 'paid', 'cancelled'])->default('pending');
             $table->string('payment_id')->nullable(); // ID do pagamento externo, caso utilize Mercado Pago
             $table->timestamps();
         });

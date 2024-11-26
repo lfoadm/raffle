@@ -5,7 +5,7 @@
     <!--begin::Container-->
     <div class="container">
         
-        
+        @include('components.alert')
         <ul>
             <li>NOME: {{ $raffle->title  }}</li>
             <li>CODIGO: {{ $raffle->id  }}</li>
@@ -40,6 +40,7 @@
         
                     <input type="hidden" name="selected_quotas[]" id="selectedQuotas">
                     <button type="submit" class="btn btn-primary mt-3">Adicionar ao Carrinho</button>
+                    <a href="{{ route('cart.show') }}" class="btn btn-info mt-3"><i class="ki-duotone ki-handcart fs-2"></i>Ver Carrinho</a>
                 </form>
             </div>
         </div>
@@ -47,22 +48,20 @@
         <br><hr>
 
         <h1>RIFAS DA MESMA CATEGORIA</h1>
-        @foreach($rraffles as $item)
-        <ul>
-            <li>NOME: {{ $item->title  }}</li>
-            <li>CODIGO: {{ $item->id  }}</li>
-            <li>DESCRICAO: {{ $item->description  }}</li>
-            <li>VENDEDOR: {{ $item->user->name  }}</li>
-        </ul>
-        @endforeach
-
-              
-
-                
+        @if($rraffles)
+            @foreach($rraffles as $item)
+            <ul>
+                <li>NOME: {{ $item->title  }}</li>
+                <li>CODIGO: {{ $item->id  }}</li>
+                <li>DESCRICAO: {{ $item->description  }}</li>
+                <li>VENDEDOR: {{ $item->user->name  }}</li>
+            </ul>
+            @endforeach
+        @endif
     </div>
-    <!--end::Container-->
+    
 </div>
-<!--end::Team Section-->
+
 @endsection
 
 @push('scripts')
