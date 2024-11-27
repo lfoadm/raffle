@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cart_id')->constrained('carts')->onDelete('cascade'); // Carrinho ao qual o item pertence
             $table->foreignId('raffle_id')->constrained('raffles')->onDelete('cascade'); // Rifa adicionada ao carrinho
-            $table->foreignId('raffle_quota_id')->constrained()->cascadeOnDelete(); // Relacionamento com raffle_quotas
+            $table->foreignId('raffle_quota_id')->constrained('raffle_quotas')->cascadeOnDelete(); // Relacionamento com raffle_quotas
             $table->decimal('unit_price', 10, 2); // Preço unitário da cota
             $table->timestamps();
         });

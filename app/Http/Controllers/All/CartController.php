@@ -91,13 +91,14 @@ class CartController extends Controller
         $cart = Cart::with(['items.raffleQuota.raffle'])->where('user_id', $userId)->first();
         // dd($cart);
 
-        // if (!$cart || $cart->items->isEmpty()) {
-        //     return view('pages.cart.show', ['cartItemsGrouped' => []])->with('status', 'Seu carrinho está vazio.');
-        // }
+        if (!$cart || $cart->items->isEmpty()) {
+            return view('pages.cart.show', ['cartItemsGrouped' => []])->with('status', 'Seu carrinho está vazio.');
+        }
 
         // Agrupa os itens por rifa
         $cartItemsGrouped = $cart->items->groupBy('raffleQuota.raffle.title')->map(function ($group) {
             return [
+                'raffle_id' => $group->first()->raffleQuota->raffle->id,
                 'raffle_name' => $group->first()->raffleQuota->raffle->title,
                 'raffle_image' => $group->first()->raffleQuota->raffle->image,
                 'quota_numbers' => $group->pluck('raffleQuota.quota_number')->toArray(),

@@ -9,6 +9,7 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Middleware\AuthAdmin;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\All\CheckoutController;
 
 #AUTENTICAÇÃO
 Auth::routes();
@@ -36,6 +37,12 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
     Route::delete('/cart/remove-raffle', [CartController::class, 'removeRaffle'])->name('cart.removeRaffle');
 
+    #checkout
+    Route::post('/cart/checkout', [CheckoutController::class, 'finalizePurchase'])->name('checkout.finalize');
+    Route::get('/checkout/payment/{orderId}', [CheckoutController::class, 'showPaymentPage'])->name('checkout.payment');
+    Route::post('/checkout/process', [CheckoutController::class, 'processPayment'])->name('checkout.process');
+    Route::post('/webhook/mercadopago', [CheckoutController::class, 'webhook'])->name('webhook.mercadopago');
+
 });
 
 // #CONTA DO ADMINISTRADOR
@@ -49,5 +56,8 @@ Route::middleware(['auth', AuthAdmin::class])->group(function() {
 
     #categorias
     Route::resource('/categories', CategoryController::class)->names('admin.categories');
-
 });
+
+
+
+

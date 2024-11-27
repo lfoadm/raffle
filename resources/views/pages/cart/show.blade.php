@@ -40,7 +40,8 @@
                                 <tbody class="fw-semibold text-gray-600">
                                     @foreach($cartItemsGrouped as $index => $group)
                                     <tr>
-                                        <td class="text-center pe-0"><span class="fw-bold">{{ $loop->iteration }}</span></td>
+                                        <td class="text-center pe-0"><span class="fw-bold">{{ $group['raffle_id'] }}</span></td>
+                                        {{-- <td class="text-center pe-0"><span class="fw-bold">{{ $loop->iteration }}</span></td> --}}
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <a href="#" class="symbol symbol-50px">
@@ -106,7 +107,15 @@
                             </table>
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ route('home') }}" class="btn btn-secondary">Continuar Comprando</a>
-                                <a href="{{ route('home') }}" class="btn btn-primary">Finalizar Compra</a>
+                                
+                                <form action="{{ route('checkout.finalize') }}" method="POST">
+                                    @csrf
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <button type="submit" class="btn btn-dark">Ir para pagamento</button>
+                                    </div>
+                                </form>
+                                
+                                {{-- <a href="{{ route('checkout.finalize') }}" class="btn btn-dark">Ir para pagamento</a> --}}
                             </div>
                         @else
                         <p>Você ainda não possui nenhuma rifa!</p>
