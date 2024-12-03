@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\All\Cart;
 use App\Models\All\CartItem;
 use App\Models\All\Raffle;
+use App\Services\OrderService;
 use App\Models\All\RaffleQuota;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,13 @@ use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
+    protected $orderService;
+
+    public function __construct(OrderService $orderService)
+    {
+        $this->orderService = $orderService;
+    }
+
     public function add(Request $request, $raffleId)
     {
         // Decodificar o JSON no campo 'selected_quotas'
@@ -113,24 +121,6 @@ class CartController extends Controller
         return view('pages.cart.show', compact('cartItemsGrouped'));
     }
 
-    /**
-     * Remove uma cota do carrinho.
-     */
-    // public function remove($itemId)
-    // {
-    //     $cartItem = CartItem::findOrFail($itemId);
-    
-    //     // Atualiza o status da cota para "available"
-    //     $raffleQuota = $cartItem->raffleQuota;
-    //     $raffleQuota->update(['status' => 'available']);
-
-    //     // Remove o item do carrinho
-    //     $cartItem->delete();
-
-    //     return redirect()->route('cart.show')->with('danger', 'Item removido do carrinho.');
-    // }
-
-
     public function removeRaffle(Request $request)
     {
         // Recupera os IDs das cotas a serem removidas
@@ -160,63 +150,33 @@ class CartController extends Controller
         return redirect()->route('cart.show')->with('danger', 'Cotas removidas do carrinho.');
     }
 
-
-
-
-    // public function removeRaffle(Request $request)
-    // {
-    //     // Recupera os IDs das cotas a serem removidas
-    //     $raffleIds = $request->input('raffle_ids');
-
-    //     // dd($raffleIds);
-    //     // Verifica se os IDs das cotas foram passados
-    //     if (empty($raffleIds)) {
-    //         return redirect()->back()->withErrors(['raffle_ids' => 'Nenhuma cota foi selecionada para remoção.']);
-    //     }
-
-    //     // Identifica o usuário logado
-    //     $userId = Auth::id();
-
-    //     // Busca o carrinho aberto do usuário
-    //     $cart = Cart::where('user_id', $userId)->first();
-
-    //     if (!$cart) {
-    //         return redirect()->back()->withErrors(['cart' => 'Carrinho não encontrado.']);
-    //     }
-
-    //     // Remove os itens do carrinho com os IDs das cotas selecionadas
-    //     CartItem::whereIn('raffle_quota_id', $raffleIds)->where('cart_id', $cart->id)->delete();
-
-    //     // Atualiza as cotas removidas para o status 'available'
-    //     RaffleQuota::whereIn('id', $raffleIds)->update(['status' => 'available']);
-
-    //     return redirect()->route('cart.show')->with('danger', 'Cotas removidas do carrinho.');
-    // }
-
-
-   
-    
-    
-
     /**
      * Finaliza o carrinho.
      */
-    public function checkout()
+    public function finalizePurchase(Request $request)
     {
         $userId = Auth::id();
-
+        
         // Busca o carrinho do usuário
-        $cart = Cart::with('items')->where('user_id', $userId)->where('status', 'open')->first();
+        $cart = Cart::with('items.raffleQuota.raffle')->where('user_id', $userId)->first();
 
+        // Verifica se existe itens no carrinho
         if (!$cart || $cart->items->isEmpty()) {
-            return redirect()->route('cart.show')->with('error', 'Carrinho vazio.');
+            return redirect()->route('cart.show')->withErrors('Seu carrinho está vazio.');
         }
+        
+        // Cria o pedido
+        try {
+            $order = $this->orderService->createOrderFromCart($cart);
+            
+            // Remove o carrinho e seus itens
+            $cart->items()->delete();
+            $cart->delete();
 
-        // Atualiza o status do carrinho para fechado
-        $cart->update(['status' => 'checked_out']);
-
-        // Aqui você redireciona para o gateway de pagamento (Stripe, Mercado Pago, etc.)
-        return redirect()->route('payment.index', ['cart' => $cart->id]);
+            return redirect()->route('checkout.payment', ['orderId' => $order->id]);
+        } catch (\Exception $e) {
+            return redirect()->route('cart.show')->withErrors('Erro ao processar o pedido: ' . $e->getMessage());
+        }
     }
     
 }

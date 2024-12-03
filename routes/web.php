@@ -36,14 +36,30 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/cart/add/{raffleId}', [CartController::class, 'add'])->name('cart.add');
     Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
     Route::delete('/cart/remove-raffle', [CartController::class, 'removeRaffle'])->name('cart.removeRaffle');
+    Route::post('/cart/checkout', [CartController::class, 'finalizePurchase'])->name('checkout.finalize'); // FINALIZA CARRINHO E CRIA PEDIDO
 
     #checkout
-    Route::post('/cart/checkout', [CheckoutController::class, 'finalizePurchase'])->name('checkout.finalize');
-    Route::get('/checkout/payment/{orderId}', [CheckoutController::class, 'showPaymentPage'])->name('checkout.payment');
+    Route::get('/checkout/payment/{orderId}', [CheckoutController::class, 'showPaymentPage'])->name('checkout.payment'); // APRESENTA A TELA DE PAGAMENTO
     Route::post('/checkout/process', [CheckoutController::class, 'processPayment'])->name('checkout.process');
     Route::post('/webhook/mercadopago', [CheckoutController::class, 'webhook'])->name('webhook.mercadopago');
 
+    // Route::post('/checkout/pix', [CheckoutController::class, 'createPixPayment'])->name('checkout.pix');
+    // Route::post('/webhook/pix', [CheckoutController::class, 'webhookHandler'])->name('webhook.pix');
+
+    Route::get('/checkout/success', [CheckoutController::class, 'checksuccess'])->name('checkout.success');
+    Route::get('/checkout/failure', [CheckoutController::class, 'checkfailure'])->name('checkout.failure');
+    Route::get('/checkout/pending', [CheckoutController::class, 'checkpending'])->name('checkout.pending');
+
 });
+
+// Criar a Preference e gerar QR Code Pix
+// Route::post('/create-preference', [CheckoutController::class, 'createPreference'])->name('payment.create');
+
+// Rota para receber notificações do Mercado Pago (configurada em `notification_url`)
+// Route::post('/payment/notifications', [CheckoutController::class, 'handleNotification'])->name('payment.notifications');
+
+
+
 
 // #CONTA DO ADMINISTRADOR
 Route::middleware(['auth', AuthAdmin::class])->group(function() {

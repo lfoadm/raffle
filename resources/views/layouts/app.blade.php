@@ -102,16 +102,13 @@
 								</div>
 
 								@guest
-								@else
-									
-								@endguest
-								
-								<!--begin::Toolbar-->
-                                @guest
 									<div class="flex-equal text-end ms-1">
 										<a href="{{ route('login') }}" class="btn btn-warning">Minha conta</a>
 									</div>
                                 @else
+								
+								
+
 								@if(Auth::user()->cart)
 								<div class="flex-equal text-end ms-1">
 									<a class="btn btn-info" href="{{ route('cart.show') }}" data-kt-scroll-toggle="true" data-kt-drawer-dismiss="true">
@@ -126,7 +123,15 @@
 										</div>
 									</a>
 								</div>
-							
+								@else
+									<div class="flex-equal text-end ms-1">
+										<button class="btn btn-secondary" href="#">
+											<span class="ms-2">Carrinho vazio</span>
+											<div class="position-relative d-inline-block">
+												<i class="ki-duotone ki-handcart fs-2" style="font-size: 3.5rem;"></i>
+											</div>
+										</button>
+									</div>
 								@endif
                                 @endguest
 								<!--end::Toolbar-->
