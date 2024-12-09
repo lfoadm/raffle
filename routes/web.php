@@ -10,6 +10,7 @@ use App\Http\Middleware\AuthAdmin;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\All\CheckoutController;
+use App\Http\Controllers\All\WebhookController;
 
 #AUTENTICAÇÃO
 Auth::routes();
@@ -43,20 +44,18 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/checkout/process', [CheckoutController::class, 'processPayment'])->name('checkout.process');
     Route::post('/webhook/mercadopago', [CheckoutController::class, 'webhook'])->name('webhook.mercadopago');
 
-    // Route::post('/checkout/pix', [CheckoutController::class, 'createPixPayment'])->name('checkout.pix');
-    // Route::post('/webhook/pix', [CheckoutController::class, 'webhookHandler'])->name('webhook.pix');
-
     Route::get('/checkout/success', [CheckoutController::class, 'checksuccess'])->name('checkout.success');
     Route::get('/checkout/failure', [CheckoutController::class, 'checkfailure'])->name('checkout.failure');
     Route::get('/checkout/pending', [CheckoutController::class, 'checkpending'])->name('checkout.pending');
 
+    
 });
 
-// Criar a Preference e gerar QR Code Pix
-// Route::post('/create-preference', [CheckoutController::class, 'createPreference'])->name('payment.create');
 
-// Rota para receber notificações do Mercado Pago (configurada em `notification_url`)
-// Route::post('/payment/notifications', [CheckoutController::class, 'handleNotification'])->name('payment.notifications');
+Route::post('/mercadopago/webhook', [WebhookController::class, 'handleNotification']);
+
+Route::post('/retorno-pagto', [CheckoutController::class, 'handlePixCreated']);
+Route::post('/retorno-ok', [CheckoutController::class, 'pagamentook']);
 
 
 

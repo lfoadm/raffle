@@ -46,13 +46,11 @@ class CartController extends Controller
         // Busca ou cria um carrinho para o usuário
         $cart = Cart::firstOrCreate(['user_id' => $userId]);
 
-        //observa se outra pessoa já pegou a cota
-        
+        //observa se outra pessoa já pegou a cota        
         if ($quotaBlock = RaffleQuota::whereIn('id', $request->selected_quotas)->where('status', 'reserved')->get()->count() > 0) {
             return redirect()->back()->with('danger', 'Cotas indisponíveis, revise a sua rifa.');
         }
         
-
         // Busca as cotas selecionadas no banco de dados em um único query
         $raffleQuotas = RaffleQuota::whereIn('id', $request->selected_quotas)
             ->where('status', 'available') // Verifica se as cotas estão disponíveis
@@ -66,9 +64,7 @@ class CartController extends Controller
         // Adiciona as cotas ao carrinho e atualiza o status para "reserved"
         foreach ($raffleQuotas as $raffleQuota) {
             // Verifica se a cota já está no carrinho
-            $existingItem = CartItem::where('cart_id', $cart->id)
-                ->where('raffle_quota_id', $raffleQuota->id)
-                ->first();
+            $existingItem = CartItem::where('cart_id', $cart->id)->where('raffle_quota_id', $raffleQuota->id)->first();
 
             if (!$existingItem) {
                 // Adiciona nova cota ao carrinho
@@ -97,7 +93,6 @@ class CartController extends Controller
         
         // Busca o carrinho do usuário com itens e cotas
         $cart = Cart::with(['items.raffleQuota.raffle'])->where('user_id', $userId)->first();
-        // dd($cart);
 
         if (!$cart || $cart->items->isEmpty()) {
             return view('pages.cart.show', ['cartItemsGrouped' => []])->with('status', 'Seu carrinho está vazio.');
@@ -169,9 +164,9 @@ class CartController extends Controller
         try {
             $order = $this->orderService->createOrderFromCart($cart);
             
-            // Remove o carrinho e seus itens
-            $cart->items()->delete();
-            $cart->delete();
+            // // Remove o carrinho e seus itens
+            // $cart->items()->delete();
+            // $cart->delete();
 
             return redirect()->route('checkout.payment', ['orderId' => $order->id]);
         } catch (\Exception $e) {

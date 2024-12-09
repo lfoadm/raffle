@@ -69,23 +69,31 @@ class CheckoutController extends Controller
                 'X-Idempotency-Key' => $idempotencyKey, // Incluindo o cabeçalho
             ])->post('https://api.mercadopago.com/v1/payments', $paymentData);
 
+            //dd($response->json());
+            //dd($response);
         if ($response->successful()) {
             $responseData = $response->json();
-            // $qr = $responseData['point_of_interaction']['transaction_data']['qr_code_base64'];
-            // echo '<img src="data:image/png;base64, '.$qr.'" />';
-            
-            // Retornar a view com os dados do QR Code
-            return view('pages.checkout.payment', [
-                'qr_code' => $responseData['point_of_interaction']['transaction_data']['qr_code'],
-                'qr_code_base64' => $responseData['point_of_interaction']['transaction_data']['qr_code_base64'],
-                'expiration_time' => $responseData['date_of_expiration'],
-                'transaction_id' => $responseData['id'],
-                'transaction_amount' => $responseData['transaction_amount'],
-                'order' => $order,
-            ]);
+            if (isset($responseData['status']) && $responseData['status'] === 'pending') {
+                // Lógica para status "pending" (aguardando pagamento) e salvar codigo do pagamento
+                $order->update([
+                    'payment_id' => $responseData['id'],
+                ]);
+
+                return view('pages.checkout.payment', [
+                    'qr_code' => $responseData['point_of_interaction']['transaction_data']['qr_code'],
+                    'qr_code_base64' => $responseData['point_of_interaction']['transaction_data']['qr_code_base64'],
+                    'expiration_time' => $responseData['date_of_expiration'],
+                    'transaction_id' => $responseData['id'],
+                    'transaction_amount' => $responseData['transaction_amount'],
+                    'order' => $order,
+                ]);
+            } else {
+                Log::warning('Status inesperado no pagamento Pix', $responseData);
+                return back()->withErrors(['error' => 'Erro inesperado ao processar o pagamento.']);
+            }
         } else {
-            // Log do erro e retorno para o usuário
-            Log::error('Erro ao criar pagamento Pix', $response->json());
+            $errorData = $response->json();
+            Log::error('Erro ao criar pagamento Pix', $errorData);
             return back()->withErrors(['error' => 'Erro ao processar o pagamento.']);
         }
     }
@@ -93,13 +101,20 @@ class CheckoutController extends Controller
     /**
      * Manipula notificações (webhook) do Mercado Pago.
      */
-    public function webhookHandler(Request $request)
+    public function handlePixCreated(Request $request)
     {
+        $data = $request->data;
+        // return response()->json(['status' => 'received', 'data' => $data], 200);
         Log::info('Webhook recebido:', $request->all());
 
-        // Aqui você deve validar e processar o evento enviado pelo Mercado Pago
-        // Consulte a documentação para verificar o tipo de evento e atualizar o status do pagamento.
-        return response()->json(['status' => 'received'], 200);
+        return view('status');
+    }
+
+    public function checksuccess(Request $request)
+    {
+        $data = $request->all();
+        return "teste";
+        // return view('pages.checkout.pay', compact('data'));
     }
     
 }

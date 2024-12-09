@@ -71,10 +71,11 @@
                 {{ $qr_code }}
             </div>
 
-            {{-- <p>Status do pagamento: {{ $payment->status }}</p> --}}
-            {{-- <p>Cliente: {{ $payment->description }}</p> --}}
+            <!-- Contador regressivo -->
+            <div class="countdown">
+                Tempo restante para pagar: <h1 id="countdown-timer"></h1>
+            </div>
             
-
             <p class="text-muted">Após realizar o pagamento, a confirmação será processada automaticamente. Caso tenha dúvidas, entre em contato com o suporte.</p>
         </div>
     </div>
@@ -102,5 +103,34 @@
         // Exibe uma mensagem opcional (pode usar um toast ou alert personalizado)
         alert('Conteúdo copiado para a área de transferência!');
     }
+
+    // Obtenha a data de expiração do QR Code
+    const expirationTime = new Date("{{ $expiration_time }}");
+        
+    // Função para atualizar o contador
+    function updateCountdown() {
+        const now = new Date();
+        const timeRemaining = expirationTime - now;
+
+        if (timeRemaining > 0) {
+            const minutes = Math.floor((timeRemaining % (1000 * 10 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+            // Atualiza o texto do contador
+            document.getElementById("countdown-timer").textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        } else {
+            // Quando o tempo acabar
+            document.getElementById("countdown-timer").textContent = "Expirado!";
+            alert("O tempo para pagamento expirou. Por favor, gere um novo QR Code.");
+            clearInterval(countdownInterval); // Para o intervalo
+        }
+    }
+
+    // Atualiza o contador a cada 1 segundo
+    const countdownInterval = setInterval(updateCountdown, 1000);
+
+    // Chamada inicial para exibir imediatamente
+    updateCountdown();
 </script>
 @endpush
